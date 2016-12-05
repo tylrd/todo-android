@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.mtaylord.todo.model.Item;
 
@@ -18,6 +20,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,26 +28,16 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.fab) FloatingActionButton fab;
 
-    private RecyclerView.LayoutManager mLayoutManager;
-    private RecyclerView.Adapter mAdapter;
-
+    private TodoAdapter mAdapter;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        setUpRecyclerView();
 
-        mLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(mLayoutManager);
-
-        List<Item> items = new ArrayList<>();
-        Item firstItem = new Item();
-        firstItem.setName("Testing");
-        items.add(firstItem);
-        mAdapter = new TodoAdapter(items);
-
-        recyclerView.setAdapter(mAdapter);
+        Timber.i("Hello!");
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,6 +46,24 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+    }
+
+    private void setUpRecyclerView() {
+        List<Item> items = new ArrayList<>();
+        for (int i = 0; i < 30; i++) items.add(new Item("Item " + i, null));
+        mAdapter = new TodoAdapter(items);
+        mAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int position) {
+                Toast.makeText(MainActivity.this, position + " clicked!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        recyclerView.setAdapter(mAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(itemDecoration);
     }
 
     @Override

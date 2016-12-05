@@ -16,9 +16,14 @@ import butterknife.ButterKnife;
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
 
     private List<Item> mItemList;
+    private OnItemClickListener clickListener;
 
     public TodoAdapter(List<Item> itemList) {
         mItemList = itemList;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener itemClickListener) {
+        this.clickListener = itemClickListener;
     }
 
     @Override
@@ -37,13 +42,21 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
         return mItemList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.item_name) TextView mItemName;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(final View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (clickListener != null) {
+                        clickListener.onItemClick(view, getAdapterPosition());
+                    }
+                }
+            });
         }
 
         public void bind(Item item) {

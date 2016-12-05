@@ -1,11 +1,10 @@
 package com.mtaylord.todo.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-/**
- * Created by taylor on 12/3/16.
- */
 @Data
+@AllArgsConstructor
 public class Item {
     private String name;
     private String description;
