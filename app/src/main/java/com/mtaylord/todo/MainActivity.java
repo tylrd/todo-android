@@ -2,7 +2,6 @@ package com.mtaylord.todo;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,15 +13,11 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.mtaylord.todo.model.Item;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.mtaylord.todo.model.ItemList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ItemDialogListener {
 
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -37,21 +32,17 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         setUpRecyclerView();
 
-        Timber.i("Hello!");
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                ItemDialog dialog = new ItemDialog();
+                dialog.show(getFragmentManager(), "item_dialog");
             }
         });
     }
 
     private void setUpRecyclerView() {
-        List<Item> items = new ArrayList<>();
-        for (int i = 0; i < 30; i++) items.add(new Item("Item " + i, null));
-        mAdapter = new TodoAdapter(items);
+        mAdapter = new TodoAdapter(ItemList.getList());
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
@@ -64,6 +55,20 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(itemDecoration);
+    }
+
+    @Override
+    public void onDialogNegativeClick(ItemDialog dialog) {
+        dialog.getDialog().dismiss();
+    }
+
+    @Override
+    public void onDialogPositiveClick(ItemDialog dialog, String itemName) {
+        if (itemName != null) {
+            Item item = new Item(itemName, null);
+            ItemList.getList().add(0, item);
+            mAdapter.notifyItemChanged(0);
+        }
     }
 
     @Override
