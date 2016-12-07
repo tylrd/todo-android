@@ -7,23 +7,30 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.mtaylord.todo.model.Item;
 import com.mtaylord.todo.model.ItemList;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
-public class MainActivity extends AppCompatActivity implements ItemDialogListener {
+public class MainActivity extends AppCompatActivity implements ItemDialog.DialogListener {
 
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.fab) FloatingActionButton fab;
 
     private TodoAdapter mAdapter;
+    private Menu mMenu;
+    private List<Integer> pendingDelete = new ArrayList<>();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,10 +50,30 @@ public class MainActivity extends AppCompatActivity implements ItemDialogListene
 
     private void setUpRecyclerView() {
         mAdapter = new TodoAdapter(ItemList.getList());
-        mAdapter.setOnItemClickListener(new OnItemClickListener() {
+
+        mAdapter.setOnItemClickListener(new TodoAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
-                Toast.makeText(MainActivity.this, position + " clicked!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mAdapter.setOnItemCheckedListener(new TodoAdapter.OnItemCheckedListener() {
+            @Override
+            public void onItemChecked(int position) {
+                Timber.d("%d checked!", position);
+                if (mMenu != null) {
+                    mMenu.findItem(R.id.group_delete).setVisible(true);
+                }
+                pendingDelete.add(position);
+            }
+
+            @Override
+            public void onItemUnchecked(int position) {
+                Timber.d("%d unchecked!", position);
+                pendingDelete.remove(Integer.valueOf(position));
+                if (mMenu != null && pendingDelete.size() == 0) {
+                    mMenu.findItem(R.id.group_delete).setVisible(false);
+                }
             }
         });
 
@@ -55,6 +82,21 @@ public class MainActivity extends AppCompatActivity implements ItemDialogListene
 
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(itemDecoration);
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                ItemList.getList().remove(position);
+                mAdapter.notifyItemRemoved(position);
+            }
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+        });
+        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
     @Override
@@ -73,23 +115,23 @@ public class MainActivity extends AppCompatActivity implements ItemDialogListene
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        mMenu = menu;
+        menu.findItem(R.id.group_delete).setVisible(false);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                return true;
+            case R.id.group_delete:
+                for (Integer num : pendingDelete) {
+                    Timber.d("%d deleted", num);
+                }
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }

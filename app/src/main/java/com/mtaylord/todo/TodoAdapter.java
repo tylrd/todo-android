@@ -4,6 +4,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.mtaylord.todo.model.Item;
@@ -15,15 +17,29 @@ import butterknife.ButterKnife;
 
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
 
+    interface OnItemClickListener {
+        void onItemClick(View itemView, int position);
+    }
+
+    interface OnItemCheckedListener {
+        void onItemChecked(int position);
+        void onItemUnchecked(int position);
+    }
+
     private List<Item> mItemList;
-    private OnItemClickListener clickListener;
+    private OnItemClickListener mClickListener;
+    private OnItemCheckedListener mItemCheckedListener;
 
     public TodoAdapter(List<Item> itemList) {
         mItemList = itemList;
     }
 
     public void setOnItemClickListener(OnItemClickListener itemClickListener) {
-        this.clickListener = itemClickListener;
+        mClickListener = itemClickListener;
+    }
+
+    public void setOnItemCheckedListener(OnItemCheckedListener itemCheckedListener) {
+        mItemCheckedListener = itemCheckedListener;
     }
 
     @Override
@@ -45,15 +61,32 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.item_name) TextView mItemName;
+        @BindView(R.id.item_checked) CheckBox mCheckbox;
 
         public ViewHolder(final View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            setItemClickListener();
+            setCheckBoxListener();
+        }
+
+        private void setCheckBoxListener() {
+            mCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    if (b) mItemCheckedListener.onItemChecked(getAdapterPosition());
+                    else mItemCheckedListener.onItemUnchecked(getAdapterPosition());
+                }
+            });
+
+        }
+
+        private void setItemClickListener() {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (clickListener != null) {
-                        clickListener.onItemClick(view, getAdapterPosition());
+                    if (mClickListener != null) {
+                        mClickListener.onItemClick(view, getAdapterPosition());
                     }
                 }
             });

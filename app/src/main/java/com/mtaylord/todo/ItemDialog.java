@@ -7,11 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
-
-import timber.log.Timber;
 
 /**
  * Created by taylor on 12/6/16.
@@ -19,13 +15,19 @@ import timber.log.Timber;
 
 public class ItemDialog extends DialogFragment {
 
-    ItemDialogListener mListener;
+    interface DialogListener {
+        void onDialogPositiveClick(ItemDialog dialog, String itemName);
+
+        void onDialogNegativeClick(ItemDialog dialog);
+    }
+
+    DialogListener mListener;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            mListener = (ItemDialogListener) context;
+            mListener = (DialogListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement ItemDialogListener");
         }
@@ -35,9 +37,9 @@ public class ItemDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.item_dialog, null);
 
-        builder.setView(inflater.inflate(R.layout.item_dialog, null))
+        return builder.setMessage(R.string.dialog_add_item)
+                .setView(inflater.inflate(R.layout.item_dialog, null))
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -50,7 +52,6 @@ public class ItemDialog extends DialogFragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         mListener.onDialogNegativeClick(ItemDialog.this);
                     }
-                });
-        return builder.create();
+                }).create();
     }
 }
