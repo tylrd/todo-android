@@ -1,4 +1,4 @@
-package com.mtaylord.todo;
+package com.mtaylord.todo.ui.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +8,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.mtaylord.todo.R;
 import com.mtaylord.todo.model.Item;
 
 import java.util.List;
@@ -17,11 +18,11 @@ import butterknife.ButterKnife;
 
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
 
-    interface OnItemClickListener {
+    public interface OnItemClickListener {
         void onItemClick(View itemView, int position);
     }
 
-    interface OnItemCheckedListener {
+    public interface OnItemCheckedListener {
         void onItemChecked(int position);
         void onItemUnchecked(int position);
     }
@@ -74,8 +75,10 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
             mCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    if (b) mItemCheckedListener.onItemChecked(getAdapterPosition());
-                    else mItemCheckedListener.onItemUnchecked(getAdapterPosition());
+                    if (mItemCheckedListener != null) {
+                        if (b) mItemCheckedListener.onItemChecked(getAdapterPosition());
+                        else mItemCheckedListener.onItemUnchecked(getAdapterPosition());
+                    }
                 }
             });
 

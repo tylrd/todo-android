@@ -1,13 +1,15 @@
-package com.mtaylord.todo;
+package com.mtaylord.todo.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.widget.TextView;
+
+import com.mtaylord.todo.R;
 
 /**
  * Created by taylor on 12/6/16.
@@ -15,7 +17,7 @@ import android.widget.TextView;
 
 public class ItemDialog extends DialogFragment {
 
-    interface DialogListener {
+    public interface DialogListener {
         void onDialogPositiveClick(ItemDialog dialog, String itemName);
 
         void onDialogNegativeClick(ItemDialog dialog);
@@ -27,7 +29,7 @@ public class ItemDialog extends DialogFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            mListener = (DialogListener) context;
+            mListener = (DialogListener) getTargetFragment();
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement ItemDialogListener");
         }
