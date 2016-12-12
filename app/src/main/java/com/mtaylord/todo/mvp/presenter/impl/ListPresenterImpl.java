@@ -38,8 +38,8 @@ public class ListPresenterImpl implements ListPresenter, LoaderManager.LoaderCal
     }
 
     @Override
-    public void startLoadItems() {
-        loaderManager.initLoader(1, null, this);
+    public void startLoadItems(int loaderId) {
+        loaderManager.initLoader(loaderId, null, this);
     }
 
     @Override

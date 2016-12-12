@@ -25,10 +25,10 @@ import butterknife.ButterKnife;
 
 public class ListFragment extends Fragment implements ItemListView {
 
-    public static Fragment newInstance(int position) {
+    public static Fragment newInstance(int loaderId) {
         Fragment fragment = new ListFragment();
         Bundle args = new Bundle();
-        args.putInt("type", position);
+        args.putInt("loaderId", loaderId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,7 +51,8 @@ public class ListFragment extends Fragment implements ItemListView {
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.startLoadItems();
+        int loaderId = getArguments().getInt("loaderId");
+        mPresenter.startLoadItems(loaderId);
     }
 
     @Nullable

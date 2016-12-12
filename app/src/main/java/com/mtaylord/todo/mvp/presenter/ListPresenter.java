@@ -2,7 +2,7 @@ package com.mtaylord.todo.mvp.presenter;
 
 public interface ListPresenter extends BasePresenter {
 
-    void startLoadItems();
+    void startLoadItems(int loaderId);
 
     void addNewItem();
 
