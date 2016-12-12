@@ -1,4 +1,4 @@
-package com.mtaylord.todo;
+package com.mtaylord.todo.util;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;

@@ -9,14 +9,14 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.mtaylord.todo.R;
-import com.mtaylord.todo.model.Item;
+import com.mtaylord.todo.mvp.model.Item;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
+public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     public interface OnItemClickListener {
         void onItemClick(View itemView, int position);
@@ -31,7 +31,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
     private OnItemClickListener mClickListener;
     private OnItemCheckedListener mItemCheckedListener;
 
-    public TodoAdapter(List<Item> itemList) {
+    public ItemAdapter(List<Item> itemList) {
         mItemList = itemList;
     }
 
@@ -59,6 +59,11 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
         return mItemList.size();
     }
 
+    public void replaceData(List<Item> newData) {
+        mItemList = newData;
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.item_name) TextView mItemName;
@@ -76,8 +81,11 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     if (mItemCheckedListener != null) {
-                        if (b) mItemCheckedListener.onItemChecked(getAdapterPosition());
-                        else mItemCheckedListener.onItemUnchecked(getAdapterPosition());
+                        if (b) {
+                            mItemCheckedListener.onItemChecked(getAdapterPosition());
+                        } else {
+                            mItemCheckedListener.onItemUnchecked(getAdapterPosition());
+                        }
                     }
                 }
             });

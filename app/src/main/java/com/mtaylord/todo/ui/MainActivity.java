@@ -3,12 +3,12 @@ package com.mtaylord.todo.ui;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.mtaylord.todo.R;
 import com.mtaylord.todo.ui.adapter.ListPageAdapter;
@@ -30,14 +30,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        mPager.setAdapter(new ListPageAdapter(getSupportFragmentManager()));
+        LoaderManager loaderManager = getSupportLoaderManager();
+        mPager.setAdapter(new ListPageAdapter(getSupportFragmentManager(), this, loaderManager));
         mTabLayout.setupWithViewPager(mPager);
-    }
-
-    public void setFabListener(View.OnClickListener onClickListener) {
-        if (mFab != null && onClickListener != null) {
-            mFab.setOnClickListener(onClickListener);
-        }
     }
 
     @Override

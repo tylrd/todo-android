@@ -4,11 +4,8 @@ import android.app.Application;
 
 import timber.log.Timber;
 
-/**
- * Created by taylor on 12/4/16.
- */
-
 public class App extends Application {
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -16,4 +13,5 @@ public class App extends Application {
             Timber.plant(new Timber.DebugTree());
         }
     }
+
 }

@@ -1,4 +1,4 @@
-package com.mtaylord.todo.model;
+package com.mtaylord.todo.mvp.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

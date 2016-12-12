@@ -2,6 +2,7 @@ package com.mtaylord.todo.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,19 +11,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mtaylord.todo.R;
-import com.mtaylord.todo.model.Item;
-import com.mtaylord.todo.model.ItemList;
-import com.mtaylord.todo.ui.ItemDialog;
-import com.mtaylord.todo.ui.MainActivity;
-import com.mtaylord.todo.ui.adapter.TodoAdapter;
+import com.mtaylord.todo.mvp.model.Item;
+import com.mtaylord.todo.mvp.presenter.ListPresenter;
+import com.mtaylord.todo.mvp.view.ItemListView;
+import com.mtaylord.todo.ui.adapter.ItemAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class ListFragment extends Fragment implements ItemDialog.DialogListener {
+public class ListFragment extends Fragment implements ItemListView {
 
     public static Fragment newInstance(int position) {
         Fragment fragment = new ListFragment();
@@ -34,44 +35,44 @@ public class ListFragment extends Fragment implements ItemDialog.DialogListener 
 
     @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
 
-    private TodoAdapter mAdapater;
+    private ListPresenter mPresenter;
+
+    private FloatingActionButton fab;
+
+    private ItemAdapter mAdapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        List<Item> tempList = new ArrayList<>(0);
+        mAdapter = new ItemAdapter(tempList);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.startLoadItems();
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_fragment, container, false);
         ButterKnife.bind(this, view);
-
-        final List<Item> items;
-        if (getArguments() != null && getArguments().getInt("type") >= 0) {
-            items = ItemList.getList();
-            items.add(new Item("Testing", null));
-        } else {
-            items = ItemList.getList();
-            items.add(new Item("Testing", null));
-        }
-
-        mAdapater = new TodoAdapter(items);
-        mRecyclerView.setAdapter(mAdapater);
+        mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        ((MainActivity) getActivity()).setFabListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ItemDialog dialog = new ItemDialog();
-                dialog.setTargetFragment(ListFragment.this, 0);
-                dialog.show(getActivity().getSupportFragmentManager(), "item_dialog");
-            }
-        });
+        fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         return view;
     }
 
     @Override
-    public void onDialogPositiveClick(ItemDialog dialog, String itemName) {
-
+    public void showTasks(List<Item> tasks) {
+        mAdapter.replaceData(tasks);
     }
 
     @Override
-    public void onDialogNegativeClick(ItemDialog dialog) {
-
+    public void setPresenter(ListPresenter presenter) {
+        mPresenter = presenter;
     }
+
 }
