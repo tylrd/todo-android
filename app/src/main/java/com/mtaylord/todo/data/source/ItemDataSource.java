@@ -8,6 +8,6 @@ public interface ItemDataSource {
 
     List<Item> getItems(boolean completed);
 
-    void saveItem(boolean completed);
+    void saveItem(Item item);
 
 }

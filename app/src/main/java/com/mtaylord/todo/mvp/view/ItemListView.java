@@ -7,4 +7,8 @@ import java.util.List;
 
 public interface ItemListView extends BaseView<ListPresenter> {
     void showTasks(List<Item> tasks);
+
+    void showAddItemDialog();
+
+    void insertItem(Item item, int position);
 }

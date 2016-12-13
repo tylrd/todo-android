@@ -64,6 +64,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
+    public void addItem(Item item, int position) {
+        mItemList.add(position, item);
+        notifyItemInserted(position);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.item_name) TextView mItemName;

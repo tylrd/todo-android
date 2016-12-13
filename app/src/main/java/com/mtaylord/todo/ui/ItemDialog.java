@@ -25,14 +25,8 @@ public class ItemDialog extends DialogFragment {
 
     DialogListener mListener;
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-            mListener = (DialogListener) getTargetFragment();
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement ItemDialogListener");
-        }
+    public void setDialogListener(DialogListener listener) {
+        mListener = listener;
     }
 
     @Override
@@ -45,14 +39,18 @@ public class ItemDialog extends DialogFragment {
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        TextView text = (TextView) getDialog().findViewById(R.id.item_dialog_name);
-                        mListener.onDialogPositiveClick(ItemDialog.this, text.getText().toString());
+                        if (mListener != null) {
+                            TextView text = (TextView) getDialog().findViewById(R.id.item_dialog_name);
+                            mListener.onDialogPositiveClick(ItemDialog.this, text.getText().toString());
+                        }
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        mListener.onDialogNegativeClick(ItemDialog.this);
+                        if (mListener != null) {
+                            mListener.onDialogNegativeClick(ItemDialog.this);
+                        }
                     }
                 }).create();
     }

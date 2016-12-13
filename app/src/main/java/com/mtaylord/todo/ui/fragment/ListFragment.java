@@ -14,9 +14,12 @@ import com.mtaylord.todo.R;
 import com.mtaylord.todo.mvp.model.Item;
 import com.mtaylord.todo.mvp.presenter.ListPresenter;
 import com.mtaylord.todo.mvp.view.ItemListView;
+import com.mtaylord.todo.ui.ItemDialog;
 import com.mtaylord.todo.ui.adapter.ItemAdapter;
+import com.mtaylord.todo.ui.adapter.ListPageAdapter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -25,10 +28,12 @@ import butterknife.ButterKnife;
 
 public class ListFragment extends Fragment implements ItemListView {
 
+    public static final String LOADER_ID = "loaderId";
+
     public static Fragment newInstance(int loaderId) {
         Fragment fragment = new ListFragment();
         Bundle args = new Bundle();
-        args.putInt("loaderId", loaderId);
+        args.putInt(LOADER_ID, loaderId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -37,9 +42,27 @@ public class ListFragment extends Fragment implements ItemListView {
 
     private ListPresenter mPresenter;
 
-    private FloatingActionButton fab;
-
     private ItemAdapter mAdapter;
+
+    private ItemDialog.DialogListener dialogListener = new ItemDialog.DialogListener() {
+        @Override
+        public void onDialogPositiveClick(ItemDialog dialog, String itemName) {
+            Item item = new Item(itemName, null, false, new Date(), new Date());
+            mPresenter.addNewItem(item);
+        }
+
+        @Override
+        public void onDialogNegativeClick(ItemDialog dialog) {
+            dialog.dismiss();
+        }
+    };
+
+    private View.OnClickListener fabListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mPresenter.showAddItem();
+        }
+    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,7 +74,7 @@ public class ListFragment extends Fragment implements ItemListView {
     @Override
     public void onResume() {
         super.onResume();
-        int loaderId = getArguments().getInt("loaderId");
+        int loaderId = getArguments().getInt(LOADER_ID);
         mPresenter.startLoadItems(loaderId);
     }
 
@@ -62,8 +85,27 @@ public class ListFragment extends Fragment implements ItemListView {
         ButterKnife.bind(this, view);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        initializeFloatingActionButton();
         return view;
+    }
+
+    private void initializeFloatingActionButton() {
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        if (getArguments().getInt(LOADER_ID) == ListPageAdapter.TODO_PAGE) {
+            fab.setOnClickListener(fabListener);
+        }
+    }
+
+    @Override
+    public void showAddItemDialog() {
+        ItemDialog itemDialog = new ItemDialog();
+        itemDialog.setDialogListener(dialogListener);
+        itemDialog.show(getActivity().getSupportFragmentManager(), "add_item");
+    }
+
+    @Override
+    public void insertItem(Item item, int position) {
+        mAdapter.addItem(item, position);
     }
 
     @Override

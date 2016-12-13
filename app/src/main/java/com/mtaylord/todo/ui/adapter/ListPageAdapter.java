@@ -22,6 +22,9 @@ public class ListPageAdapter extends FragmentStatePagerAdapter {
 
     private final static String[] TABS = new String[]{"To Do", "Done"};
 
+    public static final int TODO_PAGE = 0;
+    public static final int DONE_PAGE = 1;
+
     private final Context context;
     private final LoaderManager loaderManager;
 
@@ -36,11 +39,20 @@ public class ListPageAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         Fragment fragment = ListFragment.newInstance(position);
+        initializePresenter(fragment, position);
+        return fragment;
+    }
+
+    private void initializePresenter(Fragment fragment, int position) {
+        ItemListView itemListView = (ItemListView) fragment;
         ItemDataSource itemDataSource = ItemDataSourceImpl.getInstance(context);
         Loader<List<Item>> itemListLoader = new ItemListLoader(context, itemDataSource, position != 0);
-        ListPresenter presenter = new ListPresenterImpl((ItemListView) fragment, itemListLoader, loaderManager);
+        ListPresenter presenter = new ListPresenterImpl(
+                itemListView,
+                itemListLoader,
+                loaderManager,
+                itemDataSource);
         presenter.init();
-        return fragment;
     }
 
     @Override

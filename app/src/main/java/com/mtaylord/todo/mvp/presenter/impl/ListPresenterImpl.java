@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
+import com.mtaylord.todo.data.source.ItemDataSource;
 import com.mtaylord.todo.mvp.model.Item;
 import com.mtaylord.todo.mvp.presenter.ListPresenter;
 import com.mtaylord.todo.mvp.view.ItemListView;
@@ -19,12 +20,16 @@ public class ListPresenterImpl implements ListPresenter, LoaderManager.LoaderCal
 
     private Loader<List<Item>> loader;
 
+    private ItemDataSource itemDataSource;
+
     public ListPresenterImpl(@NonNull ItemListView itemView,
                              @NonNull Loader<List<Item>> loader,
-                             @NonNull LoaderManager loaderManager) {
+                             @NonNull LoaderManager loaderManager,
+                             @NonNull ItemDataSource itemDataSource) {
         this.itemListView = itemView;
         this.loader = loader;
         this.loaderManager = loaderManager;
+        this.itemDataSource = itemDataSource;
     }
 
     @Override
@@ -53,8 +58,14 @@ public class ListPresenterImpl implements ListPresenter, LoaderManager.LoaderCal
     }
 
     @Override
-    public void addNewItem() {
+    public void showAddItem() {
+        itemListView.showAddItemDialog();
+    }
 
+    @Override
+    public void addNewItem(Item item) {
+        itemDataSource.saveItem(item);
+        itemListView.insertItem(item, 0);
     }
 
     @Override
