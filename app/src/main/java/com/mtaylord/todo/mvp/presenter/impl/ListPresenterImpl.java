@@ -11,6 +11,7 @@ import com.mtaylord.todo.mvp.model.Item;
 import com.mtaylord.todo.mvp.presenter.ListPresenter;
 import com.mtaylord.todo.mvp.view.ItemListView;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 
@@ -66,7 +67,10 @@ public class ListPresenterImpl implements ListPresenter, LoaderManager.LoaderCal
     }
 
     @Override
-    public void addNewItem(Item item) {
+    public void addNewItem(String itemName) {
+        Item item = new Item(itemName, false);
+        item.setCreated(new Date());
+        item.setUpdated(new Date());
         itemDataSource.saveItem(item);
         itemListView.insertItem(item, 0);
     }

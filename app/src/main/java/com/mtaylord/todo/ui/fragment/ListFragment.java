@@ -51,10 +51,7 @@ public class ListFragment extends Fragment implements ItemListView {
     private ItemDialog.DialogListener dialogListener = new ItemDialog.DialogListener() {
         @Override
         public void onDialogPositiveClick(ItemDialog dialog, String itemName) {
-            Item item = new Item(itemName, false);
-            item.setCreated(new Date());
-            item.setUpdated(new Date());
-            mPresenter.addNewItem(item);
+            mPresenter.addNewItem(itemName);
         }
 
         @Override

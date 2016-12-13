@@ -6,7 +6,7 @@ public interface ListPresenter extends BasePresenter {
 
     void startLoadItems(int loaderId);
 
-    void addNewItem(Item item);
+    void addNewItem(String itemName);
 
     void showAddItem();
 
