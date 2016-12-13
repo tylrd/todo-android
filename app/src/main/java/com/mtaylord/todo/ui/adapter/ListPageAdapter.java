@@ -20,7 +20,7 @@ import java.util.List;
 
 public class ListPageAdapter extends FragmentStatePagerAdapter {
 
-    private final static String[] TABS = new String[]{"To Do", "Done"};
+    private final static String[] TABS = {"To Do", "Done"};
 
     public static final int TODO_PAGE = 0;
     public static final int DONE_PAGE = 1;

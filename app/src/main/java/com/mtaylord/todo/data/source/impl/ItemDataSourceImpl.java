@@ -44,6 +44,7 @@ public class ItemDataSourceImpl implements ItemDataSource {
         List<Item> items = new ArrayList<>();
         try {
             String[] projection = {
+                    TodoContract.ItemEntry._ID,
                     TodoContract.ItemEntry.COLUMN_NAME,
                     TodoContract.ItemEntry.COLUMN_COMPLETE,
                     TodoContract.ItemEntry.COLUMN_CREATED,
@@ -54,11 +55,13 @@ public class ItemDataSourceImpl implements ItemDataSource {
 
             if (cursor != null && cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
+                    int id = cursor.getInt(cursor.getColumnIndexOrThrow(TodoContract.ItemEntry._ID));
                     String name = cursor.getString(cursor.getColumnIndexOrThrow(TodoContract.ItemEntry.COLUMN_NAME));
                     int completed = cursor.getInt(cursor.getColumnIndexOrThrow(TodoContract.ItemEntry.COLUMN_COMPLETE));
                     boolean itemCompleted = completed != 0;
                     if (itemCompleted == isComplete) {
-                        Item item = new Item(name, null, itemCompleted, null, null);
+                        Item item = new Item(name, isComplete);
+                        item.setId(id);
                         items.add(item);
                     }
                 }

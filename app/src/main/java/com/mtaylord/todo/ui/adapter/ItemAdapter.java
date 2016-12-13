@@ -23,7 +23,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     }
 
     public interface OnItemCheckedListener {
-        void onItemChecked(int position);
+        void onItemChecked(Item item, int position);
+
         void onItemUnchecked(int position);
     }
 
@@ -84,10 +85,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         private void setCheckBoxListener() {
             mCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                     if (mItemCheckedListener != null) {
-                        if (b) {
-                            mItemCheckedListener.onItemChecked(getAdapterPosition());
+                        if (checked) {
+                            mItemCheckedListener.onItemChecked(
+                                    mItemList.get(getAdapterPosition()), getAdapterPosition());
                         } else {
                             mItemCheckedListener.onItemUnchecked(getAdapterPosition());
                         }

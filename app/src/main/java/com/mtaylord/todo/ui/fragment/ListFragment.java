@@ -7,6 +7,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -24,6 +27,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 
 public class ListFragment extends Fragment implements ItemListView {
@@ -47,7 +51,9 @@ public class ListFragment extends Fragment implements ItemListView {
     private ItemDialog.DialogListener dialogListener = new ItemDialog.DialogListener() {
         @Override
         public void onDialogPositiveClick(ItemDialog dialog, String itemName) {
-            Item item = new Item(itemName, null, false, new Date(), new Date());
+            Item item = new Item(itemName, false);
+            item.setCreated(new Date());
+            item.setUpdated(new Date());
             mPresenter.addNewItem(item);
         }
 
@@ -64,11 +70,24 @@ public class ListFragment extends Fragment implements ItemListView {
         }
     };
 
-    @Override
+    private ItemAdapter.OnItemCheckedListener checkedListener = new ItemAdapter.OnItemCheckedListener() {
+        @Override
+        public void onItemChecked(Item item, int position) {
+            mPresenter.addToChecked(item, position);
+        }
+
+        @Override
+        public void onItemUnchecked(int position) {
+            mPresenter.removeFromChecked(position);
+        }
+    };
+
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         List<Item> tempList = new ArrayList<>(0);
         mAdapter = new ItemAdapter(tempList);
+        mAdapter.setOnItemCheckedListener(checkedListener);
     }
 
     @Override
@@ -118,4 +137,21 @@ public class ListFragment extends Fragment implements ItemListView {
         mPresenter = presenter;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.group_delete:
+                mPresenter.deleteChecked();
+                Timber.i("This was clicked!");
+                return true;
+            default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
 }

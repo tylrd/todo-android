@@ -24,9 +24,6 @@ public class TodoDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(CREATE_ITEM_TABLE);
-        sqLiteDatabase.execSQL("INSERT INTO item (name, complete) VALUES ('testing', 1)");
-        sqLiteDatabase.execSQL("INSERT INTO item (name, complete) VALUES ('testing', 0)");
-        sqLiteDatabase.execSQL("INSERT INTO item (name, complete) VALUES ('testing', 1)");
     }
 
     @Override
