@@ -8,6 +8,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
 import com.mtaylord.todo.data.ItemListLoader;
+import com.mtaylord.todo.data.source.ItemDataSource;
+import com.mtaylord.todo.data.source.impl.ItemDataSourceImpl;
 import com.mtaylord.todo.mvp.model.Item;
 import com.mtaylord.todo.mvp.presenter.ListPresenter;
 import com.mtaylord.todo.mvp.presenter.impl.ListPresenterImpl;
@@ -34,7 +36,8 @@ public class ListPageAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         Fragment fragment = ListFragment.newInstance(position);
-        Loader<List<Item>> itemListLoader = new ItemListLoader(context);
+        ItemDataSource itemDataSource = ItemDataSourceImpl.getInstance(context);
+        Loader<List<Item>> itemListLoader = new ItemListLoader(context, itemDataSource, position != 0);
         ListPresenter presenter = new ListPresenterImpl((ItemListView) fragment, itemListLoader, loaderManager);
         presenter.init();
         return fragment;
