@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.mtaylord.todo.BuildConfig;
 import com.mtaylord.todo.data.db.TodoContract;
 import com.mtaylord.todo.data.db.TodoDbHelper;
 import com.mtaylord.todo.data.source.ItemDataSource;
@@ -13,8 +14,6 @@ import com.mtaylord.todo.mvp.model.Item;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import timber.log.Timber;
@@ -102,9 +101,43 @@ public class ItemDataSourceImpl implements ItemDataSource {
             mDb.insert(TodoContract.ItemEntry.TABLE_NAME, null, contentValues);
 
         } catch (IllegalStateException e) {
-            Timber.e(e, "Database Error");
+            Timber.e(e, "Error saving items");
         }
 
     }
 
+    @Override
+    public void deleteItems(int[] itemIds) {
+        try {
+            if (itemIds == null || itemIds.length == 0) {
+                return;
+            }
+
+            StringBuilder builder = new StringBuilder();
+            String[] args = new String[itemIds.length];
+
+            for (int i = 0; i < itemIds.length; i++) {
+                builder.append("?");
+                if (i != itemIds.length - 1) {
+                    builder.append(",");
+                }
+                args[i] = Integer.toString(itemIds[i]);
+            }
+
+            String whereClause = "_id in (" + builder.toString() + ");";
+            mDb.delete(TodoContract.ItemEntry.TABLE_NAME, whereClause, args);
+            Timber.i("Deletion of %d items successful", itemIds.length);
+
+            if (BuildConfig.DEBUG) {
+                for (int itemId : itemIds) {
+                    Timber.d("Item %d deleted successfully", itemId);
+                }
+            }
+
+
+        } catch (IllegalStateException e) {
+            Timber.e(e, "Error deleting items.");
+        }
+
+    }
 }

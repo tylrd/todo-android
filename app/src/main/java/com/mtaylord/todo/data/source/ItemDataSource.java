@@ -10,4 +10,6 @@ public interface ItemDataSource {
 
     void saveItem(Item item);
 
+    void deleteItems(int... itemIds);
+
 }

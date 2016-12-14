@@ -1,5 +1,6 @@
 package com.mtaylord.todo.ui.adapter;
 
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 
 import com.mtaylord.todo.R;
 import com.mtaylord.todo.mvp.model.Item;
+import com.mtaylord.todo.util.ItemListDeleteDiffUtil;
+import com.mtaylord.todo.util.ItemListDiffUtil;
 
 import java.util.List;
 
@@ -23,9 +26,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     }
 
     public interface OnItemCheckedListener {
-        void onItemChecked(Item item, int position);
+        void onItemChecked(CompoundButton compoundButton, Item item, int position);
 
-        void onItemUnchecked(int position);
+        void onItemUnchecked(CompoundButton compoundButton, Item item, int position);
     }
 
     private List<Item> mItemList;
@@ -42,6 +45,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     public void setOnItemCheckedListener(OnItemCheckedListener itemCheckedListener) {
         mItemCheckedListener = itemCheckedListener;
+    }
+
+    public List<Item> getItemList() {
+        return mItemList;
     }
 
     @Override
@@ -70,6 +77,18 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         notifyItemInserted(position);
     }
 
+    public void updateList(List<Item> newData) {
+        DiffUtil.DiffResult itemListDiffResult = DiffUtil.calculateDiff(new ItemListDiffUtil(newData, mItemList));
+        mItemList = newData;
+        itemListDiffResult.dispatchUpdatesTo(this);
+    }
+
+    public void subtractItems(List<Item> itemsToRemove) {
+        DiffUtil.DiffResult itemListDiffResult = DiffUtil.calculateDiff(new ItemListDeleteDiffUtil(itemsToRemove, mItemList));
+        mItemList.removeAll(itemsToRemove);
+        itemListDiffResult.dispatchUpdatesTo(this);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.item_name) TextView mItemName;
@@ -89,9 +108,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                     if (mItemCheckedListener != null) {
                         if (checked) {
                             mItemCheckedListener.onItemChecked(
-                                    mItemList.get(getAdapterPosition()), getAdapterPosition());
+                                    compoundButton,
+                                    mItemList.get(getAdapterPosition()),
+                                    getAdapterPosition());
                         } else {
-                            mItemCheckedListener.onItemUnchecked(getAdapterPosition());
+                            mItemCheckedListener.onItemUnchecked(
+                                    compoundButton,
+                                    mItemList.get(getAdapterPosition()),
+                                    getAdapterPosition());
                         }
                     }
                 }
@@ -112,6 +136,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
         public void bind(Item item) {
             mItemName.setText(item.getName());
+            mCheckbox.setChecked(item.isChecked());
         }
     }
 

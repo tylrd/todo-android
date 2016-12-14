@@ -11,9 +11,9 @@ import com.mtaylord.todo.mvp.model.Item;
 import com.mtaylord.todo.mvp.presenter.ListPresenter;
 import com.mtaylord.todo.mvp.view.ItemListView;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Stack;
 
 import timber.log.Timber;
 
@@ -23,8 +23,7 @@ public class ListPresenterImpl implements ListPresenter, LoaderManager.LoaderCal
     private LoaderManager loaderManager;
     private Loader<List<Item>> loader;
     private ItemDataSource itemDataSource;
-    private Stack<Item> undoStack = new Stack<>();
-    private SparseArrayCompat<Item> checkedList = new SparseArrayCompat<>();
+    private List<Item> checkedItems = new ArrayList<>();
 
     public ListPresenterImpl(@NonNull ItemListView itemView,
                              @NonNull Loader<List<Item>> loader,
@@ -53,7 +52,7 @@ public class ListPresenterImpl implements ListPresenter, LoaderManager.LoaderCal
 
     @Override
     public void onLoadFinished(Loader<List<Item>> loader, List<Item> data) {
-        itemListView.showTasks(data);
+        itemListView.showItems(data);
     }
 
     @Override
@@ -76,24 +75,29 @@ public class ListPresenterImpl implements ListPresenter, LoaderManager.LoaderCal
     }
 
     @Override
-    public void addToChecked(Item item, int position) {
-        checkedList.append(position, item);
-        Timber.i("item %d checked and added to %d position in checkedItems array", item.getId(), position);
+    public void addToChecked(Item item) {
+        item.setChecked(true);
+        checkedItems.add(item);
+        Timber.d("item %d was checked.", item.getId());
     }
 
     @Override
-    public void removeFromChecked(int position) {
-        checkedList.delete(position);
-        Timber.i("%d position removed from checked items", position);
+    public void removeFromChecked(Item item) {
+        item.setChecked(false);
+        checkedItems.remove(item);
+        Timber.d("Item %d removed from checked items", item.getId());
     }
 
     @Override
     public void deleteChecked() {
-        for (int i = 0; i < checkedList.size(); i++) {
-            int key = checkedList.keyAt(i);
-            Item item = checkedList.get(key);
-            Timber.d("Item %d has been removed", item.getId());
+        int[] itemIds = new int[checkedItems.size()];
+        for (int i = 0; i < itemIds.length; i++) {
+            Item item = checkedItems.get(i);
+            itemIds[i] = item.getId();
         }
+        itemDataSource.deleteItems(itemIds);
+        itemListView.subtractItems(checkedItems);
+        checkedItems.clear();
     }
 
     @Override

@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import com.mtaylord.todo.R;
 import com.mtaylord.todo.mvp.model.Item;
@@ -22,13 +23,10 @@ import com.mtaylord.todo.ui.adapter.ItemAdapter;
 import com.mtaylord.todo.ui.adapter.ListPageAdapter;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
-
 
 public class ListFragment extends Fragment implements ItemListView {
 
@@ -69,13 +67,17 @@ public class ListFragment extends Fragment implements ItemListView {
 
     private ItemAdapter.OnItemCheckedListener checkedListener = new ItemAdapter.OnItemCheckedListener() {
         @Override
-        public void onItemChecked(Item item, int position) {
-            mPresenter.addToChecked(item, position);
+        public void onItemChecked(CompoundButton compoundButton, Item item, int position) {
+            if (!item.isChecked()) {
+                mPresenter.addToChecked(item);
+            }
         }
 
         @Override
-        public void onItemUnchecked(int position) {
-            mPresenter.removeFromChecked(position);
+        public void onItemUnchecked(CompoundButton compoundButton, Item item, int position) {
+            if (item.isChecked()) {
+                mPresenter.removeFromChecked(item);
+            }
         }
     };
 
@@ -125,8 +127,18 @@ public class ListFragment extends Fragment implements ItemListView {
     }
 
     @Override
-    public void showTasks(List<Item> tasks) {
-        mAdapter.replaceData(tasks);
+    public void showItems(List<Item> items) {
+        mAdapter.replaceData(items);
+    }
+
+    @Override
+    public void updateItems(List<Item> newItems) {
+        mAdapter.updateList(newItems);
+    }
+
+    @Override
+    public void subtractItems(List<Item> itemsToRemove) {
+        mAdapter.subtractItems(itemsToRemove);
     }
 
     @Override
@@ -142,13 +154,12 @@ public class ListFragment extends Fragment implements ItemListView {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.group_delete:
                 mPresenter.deleteChecked();
-                Timber.i("This was clicked!");
                 return true;
             default:
-            return super.onOptionsItemSelected(item);
+                return super.onOptionsItemSelected(item);
         }
     }
 }

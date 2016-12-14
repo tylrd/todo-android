@@ -2,6 +2,8 @@ package com.mtaylord.todo.mvp.presenter;
 
 import com.mtaylord.todo.mvp.model.Item;
 
+import java.util.List;
+
 public interface ListPresenter extends BasePresenter {
 
     void startLoadItems(int loaderId);
@@ -14,9 +16,9 @@ public interface ListPresenter extends BasePresenter {
 
     void removeItem(Item item);
 
-    void addToChecked(Item item, int position);
+    void addToChecked(Item item);
 
-    void removeFromChecked(int position);
+    void removeFromChecked(Item item);
 
     void deleteChecked();
 

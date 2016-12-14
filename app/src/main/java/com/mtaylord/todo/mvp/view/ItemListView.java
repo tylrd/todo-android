@@ -6,9 +6,14 @@ import com.mtaylord.todo.mvp.presenter.ListPresenter;
 import java.util.List;
 
 public interface ItemListView extends BaseView<ListPresenter> {
-    void showTasks(List<Item> tasks);
+    void showItems(List<Item> items);
 
     void showAddItemDialog();
 
     void insertItem(Item item, int position);
+
+    void updateItems(List<Item> newItems);
+
+    void subtractItems(List<Item> itemsToRemove);
+
 }

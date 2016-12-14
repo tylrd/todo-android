@@ -15,6 +15,8 @@ public class Item {
     private Date created;
     private Date updated;
 
+    private boolean checked;
+
     public Item(String name, boolean complete) {
         this.name = name;
         this.complete = complete;
