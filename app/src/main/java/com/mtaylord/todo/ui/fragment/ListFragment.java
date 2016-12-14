@@ -137,11 +137,6 @@ public class ListFragment extends Fragment implements ItemListView {
     }
 
     @Override
-    public void subtractItems(List<Item> itemsToRemove) {
-        mAdapter.subtractItems(itemsToRemove);
-    }
-
-    @Override
     public void setPresenter(ListPresenter presenter) {
         mPresenter = presenter;
     }
@@ -156,7 +151,7 @@ public class ListFragment extends Fragment implements ItemListView {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.group_delete:
-                mPresenter.deleteChecked();
+                mPresenter.deleteChecked(mAdapter.getItemList());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

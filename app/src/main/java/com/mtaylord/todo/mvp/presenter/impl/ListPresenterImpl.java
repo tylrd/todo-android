@@ -78,26 +78,31 @@ public class ListPresenterImpl implements ListPresenter, LoaderManager.LoaderCal
     public void addToChecked(Item item) {
         item.setChecked(true);
         checkedItems.add(item);
-        Timber.d("item %d was checked.", item.getId());
+        Timber.d("Item checked: %s", item);
     }
 
     @Override
     public void removeFromChecked(Item item) {
         item.setChecked(false);
         checkedItems.remove(item);
-        Timber.d("Item %d removed from checked items", item.getId());
+        Timber.d("Item unchecked: %s", item);
     }
 
     @Override
-    public void deleteChecked() {
-        int[] itemIds = new int[checkedItems.size()];
-        for (int i = 0; i < itemIds.length; i++) {
-            Item item = checkedItems.get(i);
-            itemIds[i] = item.getId();
+    public void deleteChecked(List<Item> originalList) {
+        if (!checkedItems.isEmpty()) {
+            List<Item> newList = new ArrayList<>();
+            for (Item originalItem : originalList) {
+                if (!checkedItems.contains(originalItem)) {
+                    newList.add(originalItem);
+                }
+            }
+            itemDataSource.deleteItems(checkedItems);
+            itemListView.updateItems(newList);
+            checkedItems.clear();
+        } else {
+            Timber.d("No checked items to delete.");
         }
-        itemDataSource.deleteItems(itemIds);
-        itemListView.subtractItems(checkedItems);
-        checkedItems.clear();
     }
 
     @Override

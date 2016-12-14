@@ -20,7 +20,7 @@ public interface ListPresenter extends BasePresenter {
 
     void removeFromChecked(Item item);
 
-    void deleteChecked();
+    void deleteChecked(List<Item> currentItemList);
 
     void undoRemove();
 

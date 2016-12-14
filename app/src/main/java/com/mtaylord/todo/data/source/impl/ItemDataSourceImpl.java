@@ -50,19 +50,22 @@ public class ItemDataSourceImpl implements ItemDataSource {
                     TodoContract.ItemEntry.COLUMN_UPDATED
             };
 
-            Cursor cursor = mDb.query(TodoContract.ItemEntry.TABLE_NAME, projection, null, null, null, null, null);
+            String selection = String.format("%s = ?", TodoContract.ItemEntry.COLUMN_COMPLETE);
+            String[] selectionArgs = isComplete ? new String[]{"1"} : new String[]{"0"};
+
+            Cursor cursor = mDb.query(TodoContract.ItemEntry.TABLE_NAME,
+                    projection, selection, selectionArgs, null, null, null);
 
             if (cursor != null && cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     int id = cursor.getInt(cursor.getColumnIndexOrThrow(TodoContract.ItemEntry._ID));
                     String name = cursor.getString(cursor.getColumnIndexOrThrow(TodoContract.ItemEntry.COLUMN_NAME));
                     int completed = cursor.getInt(cursor.getColumnIndexOrThrow(TodoContract.ItemEntry.COLUMN_COMPLETE));
-                    boolean itemCompleted = completed != 0;
-                    if (itemCompleted == isComplete) {
-                        Item item = new Item(name, isComplete);
-                        item.setId(id);
-                        items.add(item);
-                    }
+                    String created = cursor.getString(cursor.getColumnIndexOrThrow(TodoContract.ItemEntry.COLUMN_CREATED));
+                    Timber.d("Item %d loaded with name: %s, completed: %b, created_ts: %s", id, name, completed != 0, created);
+                    Item item = new Item(name, isComplete);
+                    item.setId(id);
+                    items.add(item);
                 }
             }
 
@@ -98,45 +101,42 @@ public class ItemDataSourceImpl implements ItemDataSource {
             contentValues.put(TodoContract.ItemEntry.COLUMN_COMPLETE, item.isComplete() ? 1 : 0);
             contentValues.put(TodoContract.ItemEntry.COLUMN_CREATED, time);
             contentValues.put(TodoContract.ItemEntry.COLUMN_UPDATED, time);
-            mDb.insert(TodoContract.ItemEntry.TABLE_NAME, null, contentValues);
+            long id = mDb.insert(TodoContract.ItemEntry.TABLE_NAME, null, contentValues);
+            Timber.d("Item successfully saved: %s", item);
+            item.setId((int) id);
 
         } catch (IllegalStateException e) {
-            Timber.e(e, "Error saving items");
+            Timber.e(e, "Error saving item %s", item.getName());
         }
 
     }
 
     @Override
-    public void deleteItems(int[] itemIds) {
+    public void deleteItems(List<Item> items) {
         try {
-            if (itemIds == null || itemIds.length == 0) {
+            if (items == null || items.isEmpty()) {
                 return;
             }
 
             StringBuilder builder = new StringBuilder();
-            String[] args = new String[itemIds.length];
+            String[] args = new String[items.size()];
 
-            for (int i = 0; i < itemIds.length; i++) {
+            for (int i = 0; i < args.length; i++) {
                 builder.append("?");
-                if (i != itemIds.length - 1) {
+                if (i != args.length - 1) {
                     builder.append(",");
                 }
-                args[i] = Integer.toString(itemIds[i]);
+                args[i] = Integer.toString(items.get(i).getId());
             }
 
-            String whereClause = "_id in (" + builder.toString() + ");";
+            String ids = builder.toString();
+            Timber.d("Trying to delete: %s", items);
+            String whereClause = String.format("_id in (%s);", ids);
             mDb.delete(TodoContract.ItemEntry.TABLE_NAME, whereClause, args);
-            Timber.i("Deletion of %d items successful", itemIds.length);
-
-            if (BuildConfig.DEBUG) {
-                for (int itemId : itemIds) {
-                    Timber.d("Item %d deleted successfully", itemId);
-                }
-            }
-
+            Timber.d("Successfully deleted: %s", items);
 
         } catch (IllegalStateException e) {
-            Timber.e(e, "Error deleting items.");
+            Timber.e(e, "Error deleting items: %s", items);
         }
 
     }

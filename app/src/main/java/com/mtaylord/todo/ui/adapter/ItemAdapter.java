@@ -18,6 +18,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
@@ -79,13 +80,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     public void updateList(List<Item> newData) {
         DiffUtil.DiffResult itemListDiffResult = DiffUtil.calculateDiff(new ItemListDiffUtil(newData, mItemList));
-        mItemList = newData;
-        itemListDiffResult.dispatchUpdatesTo(this);
-    }
-
-    public void subtractItems(List<Item> itemsToRemove) {
-        DiffUtil.DiffResult itemListDiffResult = DiffUtil.calculateDiff(new ItemListDeleteDiffUtil(itemsToRemove, mItemList));
-        mItemList.removeAll(itemsToRemove);
+        mItemList.clear();
+        mItemList.addAll(newData);
         itemListDiffResult.dispatchUpdatesTo(this);
     }
 
@@ -135,6 +131,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         }
 
         public void bind(Item item) {
+            Timber.d("Binding item %s to viewholder", item);
             mItemName.setText(item.getName());
             mCheckbox.setChecked(item.isChecked());
         }
