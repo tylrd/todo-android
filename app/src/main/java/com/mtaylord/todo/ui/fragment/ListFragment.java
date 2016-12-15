@@ -12,7 +12,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 
 import com.mtaylord.todo.R;
 import com.mtaylord.todo.mvp.model.Item;
@@ -28,7 +27,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ListFragment extends Fragment implements ItemListView {
+public class ListFragment extends Fragment implements ItemListView, ItemAdapter.OnItemSelectedListener {
 
     public static final String LOADER_ID = "loaderId";
 
@@ -65,28 +64,11 @@ public class ListFragment extends Fragment implements ItemListView {
         }
     };
 
-    private ItemAdapter.OnItemCheckedListener checkedListener = new ItemAdapter.OnItemCheckedListener() {
-        @Override
-        public void onItemChecked(CompoundButton compoundButton, Item item, int position) {
-            if (!item.isChecked()) {
-                mPresenter.addToChecked(item);
-            }
-        }
-
-        @Override
-        public void onItemUnchecked(CompoundButton compoundButton, Item item, int position) {
-            if (item.isChecked()) {
-                mPresenter.removeFromChecked(item);
-            }
-        }
-    };
-
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         List<Item> tempList = new ArrayList<>(0);
         mAdapter = new ItemAdapter(tempList);
-        mAdapter.setOnItemCheckedListener(checkedListener);
     }
 
     @Override
@@ -96,11 +78,22 @@ public class ListFragment extends Fragment implements ItemListView {
         mPresenter.startLoadItems(loaderId);
     }
 
+    @Override
+    public void onItemSelected(Item item) {
+        mPresenter.addToSelected(item);
+    }
+
+    @Override
+    public void onItemUnselected(Item item) {
+        mPresenter.removeFromSelected(item);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_fragment, container, false);
         ButterKnife.bind(this, view);
+        mAdapter.setOnItemSelectedListener(this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         initializeFloatingActionButton();
@@ -151,7 +144,7 @@ public class ListFragment extends Fragment implements ItemListView {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.group_delete:
-                mPresenter.deleteChecked(mAdapter.getItemList());
+                mPresenter.deleteSelected(mAdapter.getItemList());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

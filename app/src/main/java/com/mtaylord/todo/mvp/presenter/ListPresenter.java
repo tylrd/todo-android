@@ -16,11 +16,11 @@ public interface ListPresenter extends BasePresenter {
 
     void removeItem(Item item);
 
-    void addToChecked(Item item);
+    void addToSelected(Item item);
 
-    void removeFromChecked(Item item);
+    void removeFromSelected(Item item);
 
-    void deleteChecked(List<Item> currentItemList);
+    void deleteSelected(List<Item> currentItemList);
 
     void undoRemove();
 
