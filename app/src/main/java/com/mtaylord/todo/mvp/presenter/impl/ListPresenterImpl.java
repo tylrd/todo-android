@@ -75,14 +75,14 @@ public class ListPresenterImpl implements ListPresenter, LoaderManager.LoaderCal
 
     @Override
     public void addToSelected(Item item) {
-        item.setChecked(true);
+        item.setSelected(true);
         selectedItems.add(item);
         Timber.d("Item checked: %s", item);
     }
 
     @Override
     public void removeFromSelected(Item item) {
-        item.setChecked(false);
+        item.setSelected(false);
         selectedItems.remove(item);
         Timber.d("Item unchecked: %s", item);
     }
