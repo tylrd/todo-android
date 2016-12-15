@@ -71,7 +71,7 @@ public class ListPresenterImpl implements ListPresenter, LoaderManager.LoaderCal
         item.setCreated(new Date());
         item.setUpdated(new Date());
         itemDataSource.saveItem(item);
-        itemListView.insertItem(item, 0);
+        itemListView.insertItem(item);
     }
 
     @Override

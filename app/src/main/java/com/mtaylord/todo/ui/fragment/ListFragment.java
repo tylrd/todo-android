@@ -122,8 +122,8 @@ public class ListFragment extends Fragment implements ItemListView {
     }
 
     @Override
-    public void insertItem(Item item, int position) {
-        mAdapter.addItem(item, position);
+    public void insertItem(Item item) {
+        mAdapter.addItem(item);
     }
 
     @Override

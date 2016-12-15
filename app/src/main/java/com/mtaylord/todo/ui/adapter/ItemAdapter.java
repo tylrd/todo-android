@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.mtaylord.todo.R;
 import com.mtaylord.todo.mvp.model.Item;
-import com.mtaylord.todo.util.ItemListDeleteDiffUtil;
 import com.mtaylord.todo.util.ItemListDiffUtil;
 
 import java.util.List;
@@ -73,9 +72,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    public void addItem(Item item, int position) {
-        mItemList.add(position, item);
-        notifyItemInserted(position);
+    public void addItem(Item item) {
+        mItemList.add(item);
+        notifyItemInserted(mItemList.size() - 1);
     }
 
     public void updateList(List<Item> newData) {

@@ -5,11 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.mtaylord.todo.BuildConfig;
 import com.mtaylord.todo.data.db.TodoContract;
 import com.mtaylord.todo.data.db.TodoDbHelper;
 import com.mtaylord.todo.data.source.ItemDataSource;
 import com.mtaylord.todo.mvp.model.Item;
+import com.mtaylord.todo.util.TimeUtil;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -62,19 +62,16 @@ public class ItemDataSourceImpl implements ItemDataSource {
                     String name = cursor.getString(cursor.getColumnIndexOrThrow(TodoContract.ItemEntry.COLUMN_NAME));
                     int completed = cursor.getInt(cursor.getColumnIndexOrThrow(TodoContract.ItemEntry.COLUMN_COMPLETE));
                     String created = cursor.getString(cursor.getColumnIndexOrThrow(TodoContract.ItemEntry.COLUMN_CREATED));
-                    Timber.d("Item %d loaded with name: %s, completed: %b, created_ts: %s", id, name, completed != 0, created);
-                    Item item = new Item(name, isComplete);
+                    String updated = cursor.getString(cursor.getColumnIndexOrThrow(TodoContract.ItemEntry.COLUMN_UPDATED));
+
+                    Item item = new Item(name, completed != 0);
                     item.setId(id);
+                    item.setCreated(TimeUtil.toDate(created));
+                    item.setUpdated(TimeUtil.toDate(updated));
+                    Timber.d("Item loaded: %s", item);
                     items.add(item);
                 }
             }
-
-//            Collections.sort(items, new Comparator<Item>() {
-//                @Override
-//                public int compare(Item item, Item t1) {
-//                    return item.getCreated().compareTo(t1.getCreated());
-//                }
-//            });
 
             if (cursor != null) {
                 cursor.close();
