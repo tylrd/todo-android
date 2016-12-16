@@ -10,8 +10,10 @@ public interface ItemListView extends BaseView<ListPresenter> {
 
     void showAddItemDialog();
 
-    void insertItem(Item item, int position);
+    void insertItem(Item item);
 
     void updateItems(List<Item> newItems);
+
+    void deleteItem(int position);
 
 }

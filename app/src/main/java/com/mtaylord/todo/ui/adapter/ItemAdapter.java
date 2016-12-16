@@ -2,6 +2,7 @@ package com.mtaylord.todo.ui.adapter;
 
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,6 @@ import android.widget.TextView;
 
 import com.mtaylord.todo.R;
 import com.mtaylord.todo.mvp.model.Item;
-import com.mtaylord.todo.util.ItemListDeleteDiffUtil;
 import com.mtaylord.todo.util.ItemListDiffUtil;
 
 import java.util.List;
@@ -22,30 +22,23 @@ import timber.log.Timber;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
-    public interface OnItemClickListener {
-        void onItemClick(View itemView, int position);
-    }
+    public interface OnItemSelectedListener {
+        void onItemSelected(Item item);
 
-    public interface OnItemCheckedListener {
-        void onItemChecked(CompoundButton compoundButton, Item item, int position);
-
-        void onItemUnchecked(CompoundButton compoundButton, Item item, int position);
+        void onItemUnselected(Item item);
     }
 
     private List<Item> mItemList;
-    private OnItemClickListener mClickListener;
-    private OnItemCheckedListener mItemCheckedListener;
+    private OnItemSelectedListener mSelectedListener;
+    private SparseBooleanArray selectedItems;
 
     public ItemAdapter(List<Item> itemList) {
         mItemList = itemList;
+        selectedItems = new SparseBooleanArray();
     }
 
-    public void setOnItemClickListener(OnItemClickListener itemClickListener) {
-        mClickListener = itemClickListener;
-    }
-
-    public void setOnItemCheckedListener(OnItemCheckedListener itemCheckedListener) {
-        mItemCheckedListener = itemCheckedListener;
+    public void setOnItemSelectedListener(OnItemSelectedListener selectedClickListener) {
+        mSelectedListener = selectedClickListener;
     }
 
     public List<Item> getItemList() {
@@ -73,9 +66,31 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    public void addItem(Item item, int position) {
-        mItemList.add(position, item);
-        notifyItemInserted(position);
+    public void addItem(Item item) {
+        mItemList.add(item);
+        notifyItemInserted(mItemList.size() - 1);
+    }
+
+    public Item getItem(int position) {
+        return mItemList.get(position);
+    }
+
+    public void deleteItem(int position) {
+        SparseBooleanArray newSelectedItems = new SparseBooleanArray();
+        for (int i = 0; i < mItemList.size(); i++) {
+            int key = selectedItems.keyAt(i);
+            if (key > position) {
+                newSelectedItems.append(key - 1, true);
+            } else if (key == position) {
+                newSelectedItems.delete(position);
+            } else {
+                newSelectedItems.append(key, true);
+            }
+        }
+        selectedItems = newSelectedItems;
+        mItemList.remove(position);
+        Timber.d("Selected rows: %s", selectedItems);
+        notifyItemRemoved(position);
     }
 
     public void updateList(List<Item> newData) {
@@ -85,55 +100,44 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         itemListDiffResult.dispatchUpdatesTo(this);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.item_name) TextView mItemName;
-        @BindView(R.id.item_checked) CheckBox mCheckbox;
 
         public ViewHolder(final View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            setItemClickListener();
-            setCheckBoxListener();
+            itemView.setOnClickListener(this);
         }
 
-        private void setCheckBoxListener() {
-            mCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    if (mItemCheckedListener != null) {
-                        if (checked) {
-                            mItemCheckedListener.onItemChecked(
-                                    compoundButton,
-                                    mItemList.get(getAdapterPosition()),
-                                    getAdapterPosition());
-                        } else {
-                            mItemCheckedListener.onItemUnchecked(
-                                    compoundButton,
-                                    mItemList.get(getAdapterPosition()),
-                                    getAdapterPosition());
-                        }
-                    }
+        @Override
+        public void onClick(View view) {
+            boolean valueFound = selectedItems.get(getAdapterPosition(), false);
+            if (valueFound) {
+                selectedItems.delete(getAdapterPosition());
+                Timber.d("Selected rows: %s", selectedItems);
+                view.setSelected(false);
+                if (mSelectedListener != null) {
+                    mSelectedListener.onItemUnselected(mItemList.get(getAdapterPosition()));
                 }
-            });
-
+            } else {
+                selectedItems.put(getAdapterPosition(), true);
+                Timber.d("Selected rows: %s", selectedItems);
+                view.setSelected(true);
+                if (mSelectedListener != null) {
+                    mSelectedListener.onItemSelected(mItemList.get(getAdapterPosition()));
+                }
+            }
         }
 
-        private void setItemClickListener() {
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (mClickListener != null) {
-                        mClickListener.onItemClick(view, getAdapterPosition());
-                    }
-                }
-            });
+        public Item getItem() {
+            return mItemList.get(getAdapterPosition());
         }
 
         public void bind(Item item) {
             Timber.d("Binding item %s to viewholder", item);
             mItemName.setText(item.getName());
-            mCheckbox.setChecked(item.isChecked());
+            itemView.setSelected(item.isSelected());
         }
     }
 

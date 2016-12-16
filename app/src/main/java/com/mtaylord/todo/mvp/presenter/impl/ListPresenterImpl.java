@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v4.util.SparseArrayCompat;
 
 import com.mtaylord.todo.data.source.ItemDataSource;
 import com.mtaylord.todo.mvp.model.Item;
@@ -23,7 +22,7 @@ public class ListPresenterImpl implements ListPresenter, LoaderManager.LoaderCal
     private LoaderManager loaderManager;
     private Loader<List<Item>> loader;
     private ItemDataSource itemDataSource;
-    private List<Item> checkedItems = new ArrayList<>();
+    private List<Item> selectedItems = new ArrayList<>();
 
     public ListPresenterImpl(@NonNull ItemListView itemView,
                              @NonNull Loader<List<Item>> loader,
@@ -71,52 +70,47 @@ public class ListPresenterImpl implements ListPresenter, LoaderManager.LoaderCal
         item.setCreated(new Date());
         item.setUpdated(new Date());
         itemDataSource.saveItem(item);
-        itemListView.insertItem(item, 0);
+        itemListView.insertItem(item);
     }
 
     @Override
-    public void addToChecked(Item item) {
-        item.setChecked(true);
-        checkedItems.add(item);
+    public void addToSelected(Item item) {
+        item.setSelected(true);
+        selectedItems.add(item);
         Timber.d("Item checked: %s", item);
     }
 
     @Override
-    public void removeFromChecked(Item item) {
-        item.setChecked(false);
-        checkedItems.remove(item);
+    public void removeFromSelected(Item item) {
+        item.setSelected(false);
+        selectedItems.remove(item);
         Timber.d("Item unchecked: %s", item);
     }
 
     @Override
-    public void deleteChecked(List<Item> originalList) {
-        if (!checkedItems.isEmpty()) {
+    public void deleteSelected(List<Item> originalList) {
+        if (!selectedItems.isEmpty()) {
             List<Item> newList = new ArrayList<>();
             for (Item originalItem : originalList) {
-                if (!checkedItems.contains(originalItem)) {
+                if (!selectedItems.contains(originalItem)) {
                     newList.add(originalItem);
                 }
             }
-            itemDataSource.deleteItems(checkedItems);
+            itemDataSource.deleteItems(selectedItems);
             itemListView.updateItems(newList);
-            checkedItems.clear();
+            selectedItems.clear();
         } else {
             Timber.d("No checked items to delete.");
         }
     }
 
     @Override
-    public void removeItem(Item item) {
-
+    public void deleteItem(Item item, int position) {
+        itemListView.deleteItem(position);
     }
 
     @Override
     public void undoRemove() {
-
-    }
-
-    @Override
-    public void deleteItem(Item item) {
 
     }
 
