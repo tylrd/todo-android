@@ -24,6 +24,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     public interface OnItemSelectedListener {
         void onItemSelected(Item item);
+
         void onItemUnselected(Item item);
     }
 
@@ -70,6 +71,28 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         notifyItemInserted(mItemList.size() - 1);
     }
 
+    public Item getItem(int position) {
+        return mItemList.get(position);
+    }
+
+    public void deleteItem(int position) {
+        SparseBooleanArray newSelectedItems = new SparseBooleanArray();
+        for (int i = 0; i < mItemList.size(); i++) {
+            int key = selectedItems.keyAt(i);
+            if (key > position) {
+                newSelectedItems.append(key - 1, true);
+            } else if (key == position) {
+                newSelectedItems.delete(position);
+            } else {
+                newSelectedItems.append(key, true);
+            }
+        }
+        selectedItems = newSelectedItems;
+        mItemList.remove(position);
+        Timber.d("Selected rows: %s", selectedItems);
+        notifyItemRemoved(position);
+    }
+
     public void updateList(List<Item> newData) {
         DiffUtil.DiffResult itemListDiffResult = DiffUtil.calculateDiff(new ItemListDiffUtil(newData, mItemList));
         mItemList.clear();
@@ -106,6 +129,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                     mSelectedListener.onItemSelected(mItemList.get(getAdapterPosition()));
                 }
             }
+        }
+
+        public Item getItem() {
+            return mItemList.get(getAdapterPosition());
         }
 
         public void bind(Item item) {

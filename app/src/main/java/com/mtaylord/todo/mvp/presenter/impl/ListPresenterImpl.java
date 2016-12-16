@@ -105,17 +105,12 @@ public class ListPresenterImpl implements ListPresenter, LoaderManager.LoaderCal
     }
 
     @Override
-    public void removeItem(Item item) {
-
+    public void deleteItem(Item item, int position) {
+        itemListView.deleteItem(position);
     }
 
     @Override
     public void undoRemove() {
-
-    }
-
-    @Override
-    public void deleteItem(Item item) {
 
     }
 

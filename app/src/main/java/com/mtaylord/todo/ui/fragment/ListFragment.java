@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -91,11 +92,25 @@ public class ListFragment extends Fragment implements ItemListView, ItemAdapter.
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.list_fragment, container, false);
+        final View view = inflater.inflate(R.layout.list_fragment, container, false);
         ButterKnife.bind(this, view);
         mAdapter.setOnItemSelectedListener(this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        ItemTouchHelper.SimpleCallback itemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                mPresenter.deleteItem(mAdapter.getItem(position), position);
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
         initializeFloatingActionButton();
         return view;
     }
@@ -112,6 +127,11 @@ public class ListFragment extends Fragment implements ItemListView, ItemAdapter.
         ItemDialog itemDialog = new ItemDialog();
         itemDialog.setDialogListener(dialogListener);
         itemDialog.show(getActivity().getSupportFragmentManager(), "add_item");
+    }
+
+    @Override
+    public void deleteItem(int position) {
+        mAdapter.deleteItem(position);
     }
 
     @Override

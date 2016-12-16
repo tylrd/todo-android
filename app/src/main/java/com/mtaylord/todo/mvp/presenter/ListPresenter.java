@@ -12,9 +12,7 @@ public interface ListPresenter extends BasePresenter {
 
     void showAddItem();
 
-    void deleteItem(Item item);
-
-    void removeItem(Item item);
+    void deleteItem(Item item, int position);
 
     void addToSelected(Item item);
 

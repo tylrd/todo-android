@@ -14,4 +14,6 @@ public interface ItemListView extends BaseView<ListPresenter> {
 
     void updateItems(List<Item> newItems);
 
+    void deleteItem(int position);
+
 }
