@@ -113,7 +113,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         @Override
         public void onClick(View view) {
             boolean valueFound = selectedItems.get(getAdapterPosition(), false);
-            Item item = mItemList.get(getAdapterPosition());
             if (valueFound) {
                 selectedItems.delete(getAdapterPosition());
                 Timber.d("Selected rows: %s", selectedItems);
