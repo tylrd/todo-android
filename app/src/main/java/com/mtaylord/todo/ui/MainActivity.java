@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -12,6 +11,7 @@ import android.view.MenuItem;
 
 import com.mtaylord.todo.R;
 import com.mtaylord.todo.ui.adapter.ListPageAdapter;
+import com.mtaylord.todo.util.LockableViewPager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.fab) FloatingActionButton mFab;
-    @BindView(R.id.pager) ViewPager mPager;
+    @BindView(R.id.pager) LockableViewPager mPager;
     @BindView(R.id.sliding_tabs) TabLayout mTabLayout;
 
     private ListPageAdapter mPageAdapter;
@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         LoaderManager loaderManager = getSupportLoaderManager();
         mPager.setAdapter(new ListPageAdapter(getSupportFragmentManager(), this, loaderManager));
+        mPager.setSwipeable(false);
         mTabLayout.setupWithViewPager(mPager);
     }
 
