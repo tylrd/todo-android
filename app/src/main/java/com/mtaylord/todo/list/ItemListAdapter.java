@@ -1,4 +1,4 @@
-package com.mtaylord.todo.ui.adapter;
+package com.mtaylord.todo.list;
 
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
@@ -6,12 +6,10 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.mtaylord.todo.R;
-import com.mtaylord.todo.mvp.model.Item;
+import com.mtaylord.todo.data.model.Item;
 import com.mtaylord.todo.util.ItemListDiffUtil;
 
 import java.util.List;
@@ -20,7 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
+public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHolder> {
 
     public interface OnItemSelectedListener {
         void onItemSelected(Item item);
@@ -32,7 +30,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     private OnItemSelectedListener mSelectedListener;
     private SparseBooleanArray selectedItems;
 
-    public ItemAdapter(List<Item> itemList) {
+    public ItemListAdapter(List<Item> itemList) {
         mItemList = itemList;
         selectedItems = new SparseBooleanArray();
     }

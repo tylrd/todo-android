@@ -1,4 +1,4 @@
-package com.mtaylord.todo.mvp.model;
+package com.mtaylord.todo.data.model;
 
 import java.util.Date;
 

@@ -1,8 +1,7 @@
-package com.mtaylord.todo.ui;
+package com.mtaylord.todo.list.todo;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -15,12 +14,12 @@ import com.mtaylord.todo.R;
  * Created by taylor on 12/6/16.
  */
 
-public class ItemDialog extends DialogFragment {
+public class AddItemDialog extends DialogFragment {
 
     public interface DialogListener {
-        void onDialogPositiveClick(ItemDialog dialog, String itemName);
+        void onDialogPositiveClick(AddItemDialog dialog, String itemName);
 
-        void onDialogNegativeClick(ItemDialog dialog);
+        void onDialogNegativeClick(AddItemDialog dialog);
     }
 
     DialogListener mListener;
@@ -41,7 +40,7 @@ public class ItemDialog extends DialogFragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if (mListener != null) {
                             TextView text = (TextView) getDialog().findViewById(R.id.item_dialog_name);
-                            mListener.onDialogPositiveClick(ItemDialog.this, text.getText().toString());
+                            mListener.onDialogPositiveClick(AddItemDialog.this, text.getText().toString());
                         }
                     }
                 })
@@ -49,7 +48,7 @@ public class ItemDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if (mListener != null) {
-                            mListener.onDialogNegativeClick(ItemDialog.this);
+                            mListener.onDialogNegativeClick(AddItemDialog.this);
                         }
                     }
                 }).create();

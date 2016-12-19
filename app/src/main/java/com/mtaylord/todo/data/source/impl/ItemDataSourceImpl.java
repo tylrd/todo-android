@@ -8,12 +8,11 @@ import android.database.sqlite.SQLiteDatabase;
 import com.mtaylord.todo.data.db.TodoContract;
 import com.mtaylord.todo.data.db.TodoDbHelper;
 import com.mtaylord.todo.data.source.ItemDataSource;
-import com.mtaylord.todo.mvp.model.Item;
+import com.mtaylord.todo.data.model.Item;
 import com.mtaylord.todo.util.TimeUtil;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import timber.log.Timber;
@@ -64,12 +63,16 @@ public class ItemDataSourceImpl implements ItemDataSource {
                     String created = cursor.getString(cursor.getColumnIndexOrThrow(TodoContract.ItemEntry.COLUMN_CREATED));
                     String updated = cursor.getString(cursor.getColumnIndexOrThrow(TodoContract.ItemEntry.COLUMN_UPDATED));
 
-                    Item item = new Item(name, completed != 0);
-                    item.setId(id);
-                    item.setCreated(TimeUtil.toDate(created));
-                    item.setUpdated(TimeUtil.toDate(updated));
-                    Timber.d("Item loaded: %s", item);
-                    items.add(item);
+                    boolean itemCompleted = completed != 0;
+
+                    if (itemCompleted == isComplete) {
+                        Item item = new Item(name, itemCompleted);
+                        item.setId(id);
+                        item.setCreated(TimeUtil.toDate(created));
+                        item.setUpdated(TimeUtil.toDate(updated));
+                        Timber.d("Item loaded: %s", item);
+                        items.add(item);
+                    }
                 }
             }
 
@@ -90,14 +93,14 @@ public class ItemDataSourceImpl implements ItemDataSource {
                 return;
             }
 
-            DateFormat df = SimpleDateFormat.getDateTimeInstance();
-            String time = df.format(item.getCreated());
+
+            String timeCreated = TimeUtil.toDateString(new Date());
 
             ContentValues contentValues = new ContentValues();
             contentValues.put(TodoContract.ItemEntry.COLUMN_NAME, item.getName());
             contentValues.put(TodoContract.ItemEntry.COLUMN_COMPLETE, item.isComplete() ? 1 : 0);
-            contentValues.put(TodoContract.ItemEntry.COLUMN_CREATED, time);
-            contentValues.put(TodoContract.ItemEntry.COLUMN_UPDATED, time);
+            contentValues.put(TodoContract.ItemEntry.COLUMN_CREATED, timeCreated);
+            contentValues.put(TodoContract.ItemEntry.COLUMN_UPDATED, timeCreated);
             long id = mDb.insert(TodoContract.ItemEntry.TABLE_NAME, null, contentValues);
             Timber.d("Item successfully saved: %s", item);
             item.setId((int) id);
@@ -116,25 +119,83 @@ public class ItemDataSourceImpl implements ItemDataSource {
             }
 
             StringBuilder builder = new StringBuilder();
-            String[] args = new String[items.size()];
-
-            for (int i = 0; i < args.length; i++) {
-                builder.append("?");
-                if (i != args.length - 1) {
-                    builder.append(",");
-                }
-                args[i] = Integer.toString(items.get(i).getId());
-            }
-
-            String ids = builder.toString();
+            String[] args = buildArgs(items, builder);
             Timber.d("Trying to delete: %s", items);
-            String whereClause = String.format("_id in (%s);", ids);
+
+            String whereClause = String.format("_id in (%s);", builder.toString());
             mDb.delete(TodoContract.ItemEntry.TABLE_NAME, whereClause, args);
             Timber.d("Successfully deleted: %s", items);
 
         } catch (IllegalStateException e) {
             Timber.e(e, "Error deleting items: %s", items);
         }
+    }
 
+    @Override
+    public void deleteItem(Item item) {
+        try {
+            if (item == null || item.getId() <= 0) {
+                return;
+            }
+
+            String whereClause = "_id = ?;";
+            String[] args = { Integer.toString(item.getId()) };
+
+            mDb.delete(TodoContract.ItemEntry.TABLE_NAME, whereClause, args);
+            Timber.d("Successfully deleted item: %s", item);
+        } catch (IllegalStateException e) {
+            Timber.e(e, "Error deleting item: %s", item);
+        }
+    }
+
+    @Override
+    public void updateItem(Item item) {
+        try {
+            if (item == null || item.getId() <= 0) {
+                return;
+            }
+
+            String whereClause = "_id = ?;";
+            String[] args = { Integer.toString(item.getId()) };
+
+            ContentValues values = new ContentValues();
+            values.put(TodoContract.ItemEntry.COLUMN_COMPLETE, item.isComplete());
+            values.put(TodoContract.ItemEntry.COLUMN_NAME, item.getName());
+            values.put(TodoContract.ItemEntry.COLUMN_UPDATED, TimeUtil.toDateString(item.getUpdated()));
+
+            mDb.update(TodoContract.ItemEntry.TABLE_NAME, values, whereClause, args);
+
+            Timber.d("Successfully updated item: %s", item);
+        } catch (IllegalStateException e) {
+            Timber.e(e, "Error updating item: %s", item);
+        }
+    }
+
+    @Override
+    public void updateItems(List<Item> items) {
+        mDb.beginTransaction();
+        try {
+            //TODO
+
+            mDb.setTransactionSuccessful();
+        } catch (Exception e) {
+            mDb.endTransaction();
+            throw e;
+        } finally {
+            mDb.endTransaction();
+        }
+
+    }
+
+    private String[] buildArgs(List<Item> items, StringBuilder builder) {
+        String[] args = new String[items.size()];
+        for (int i = 0; i < args.length; i++) {
+            builder.append("?");
+            if (i != args.length - 1) {
+                builder.append(",");
+            }
+            args[i] = Integer.toString(items.get(i).getId());
+        }
+        return args;
     }
 }

@@ -1,5 +1,9 @@
 package com.mtaylord.todo.mvp.presenter;
 
-public interface BasePresenter {
-    void init();
+import com.mtaylord.todo.mvp.view.BaseView;
+
+public interface BasePresenter<V extends BaseView> {
+
+    void attachView(V view);
+
 }

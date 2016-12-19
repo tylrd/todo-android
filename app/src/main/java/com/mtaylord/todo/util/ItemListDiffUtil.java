@@ -3,7 +3,7 @@ package com.mtaylord.todo.util;
 import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
 
-import com.mtaylord.todo.mvp.model.Item;
+import com.mtaylord.todo.data.model.Item;
 
 import java.util.List;
 

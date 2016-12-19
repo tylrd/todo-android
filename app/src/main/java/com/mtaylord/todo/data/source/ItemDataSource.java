@@ -1,6 +1,6 @@
 package com.mtaylord.todo.data.source;
 
-import com.mtaylord.todo.mvp.model.Item;
+import com.mtaylord.todo.data.model.Item;
 
 import java.util.List;
 
@@ -11,5 +11,11 @@ public interface ItemDataSource {
     void saveItem(Item item);
 
     void deleteItems(List<Item> items);
+
+    void deleteItem(Item item);
+
+    void updateItem(Item item);
+
+    void updateItems(List<Item> items);
 
 }

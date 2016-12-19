@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
 import com.mtaylord.todo.data.source.ItemDataSource;
-import com.mtaylord.todo.mvp.model.Item;
+import com.mtaylord.todo.data.model.Item;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.mtaylord.todo.ui;
+package com.mtaylord.todo.list;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,13 +10,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.mtaylord.todo.R;
-import com.mtaylord.todo.ui.adapter.ListPageAdapter;
 import com.mtaylord.todo.util.LockableViewPager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class ListActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.fab) FloatingActionButton mFab;
@@ -31,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         LoaderManager loaderManager = getSupportLoaderManager();
-        mPager.setAdapter(new ListPageAdapter(getSupportFragmentManager(), this, loaderManager));
+        mPageAdapter = new ListPageAdapter(getSupportFragmentManager(), this, loaderManager);
+        mPager.setAdapter(mPageAdapter);
         mPager.setSwipeable(false);
         mTabLayout.setupWithViewPager(mPager);
     }
