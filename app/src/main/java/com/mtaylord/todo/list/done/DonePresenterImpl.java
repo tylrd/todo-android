@@ -22,13 +22,8 @@ public class DonePresenterImpl extends BaseListPresenterImpl<DoneView> implement
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Item>> loader, List<Item> data) {
-
-    }
-
-    @Override
     protected int getLoaderId() {
-        return 0;
+        return 1;
     }
 
 }

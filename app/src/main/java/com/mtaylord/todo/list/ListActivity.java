@@ -29,8 +29,7 @@ public class ListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        LoaderManager loaderManager = getSupportLoaderManager();
-        mPageAdapter = new ListPageAdapter(getSupportFragmentManager(), this, loaderManager);
+        mPageAdapter = new ListPageAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPageAdapter);
         mPager.setSwipeable(false);
         mTabLayout.setupWithViewPager(mPager);

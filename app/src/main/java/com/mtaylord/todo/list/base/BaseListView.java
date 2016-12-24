@@ -10,7 +10,13 @@ import java.util.List;
  */
 
 public interface BaseListView extends BaseView {
-    void updateList(List<Item> newList);
 
-    void updateItem(Item item, int position);
+    void showInsertItem(Item item);
+
+    void showItemList(List<Item> list);
+
+    void showUpdatedItemList(List<Item> newList);
+
+    void showUpdatedItem(Item item, int position);
+
 }

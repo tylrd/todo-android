@@ -2,8 +2,17 @@ package com.mtaylord.todo.mvp.presenter;
 
 import com.mtaylord.todo.mvp.view.BaseView;
 
-public interface BasePresenter<V extends BaseView> {
+public class BasePresenter<V extends BaseView> implements Presenter<V> {
 
-    void attachView(V view);
+    private V mView;
+
+    @Override
+    public void attachView(V view) {
+        mView = view;
+    }
+
+    public V getView() {
+        return mView;
+    }
 
 }

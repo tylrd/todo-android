@@ -6,6 +6,7 @@ import android.support.v4.content.Loader;
 
 import com.mtaylord.todo.data.model.Item;
 import com.mtaylord.todo.data.source.ItemDataSource;
+import com.mtaylord.todo.mvp.presenter.BasePresenter;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,10 +18,9 @@ import timber.log.Timber;
  * Created by taylor on 12/18/16.
  */
 
-public abstract class BaseListPresenterImpl<V extends BaseListView> implements BaseListPresenter<V>,
+public abstract class BaseListPresenterImpl<V extends BaseListView> extends BasePresenter<V> implements BaseListPresenter<V>,
         LoaderManager.LoaderCallbacks<List<Item>> {
 
-    protected V view;
     private LoaderManager loaderManager;
     private Loader<List<Item>> loader;
     private ItemDataSource itemDataSource;
@@ -40,6 +40,11 @@ public abstract class BaseListPresenterImpl<V extends BaseListView> implements B
     }
 
     @Override
+    public void onLoadFinished(Loader<List<Item>> loader, List<Item> data) {
+        getView().showItemList(data);
+    }
+
+    @Override
     public Loader<List<Item>> onCreateLoader(int id, Bundle args) {
         return loader;
     }
@@ -50,17 +55,11 @@ public abstract class BaseListPresenterImpl<V extends BaseListView> implements B
     }
 
     @Override
-    public void attachView(V view) {
-        this.view = view;
-        Timber.d("%s attached to view: %s", this, view);
-    }
-
-    @Override
     public void updateItem(Item item, int position) {
         item.setComplete(true);
         item.setUpdated(new Date());
         itemDataSource.updateItem(item);
-        view.updateItem(item, position);
+        getView().showUpdatedItem(item, position);
     }
 
     @Override
@@ -80,7 +79,7 @@ public abstract class BaseListPresenterImpl<V extends BaseListView> implements B
         if (!selectedItems.isEmpty()) {
             List<Item> newList = removeSelectedItems(originalList);
             itemDataSource.deleteItems(selectedItems);
-            view.updateList(newList);
+            getView().showUpdatedItemList(newList);
             selectedItems.clear();
         } else {
             Timber.d("No checked items to delete.");
@@ -95,6 +94,10 @@ public abstract class BaseListPresenterImpl<V extends BaseListView> implements B
             }
         }
         return newList;
+    }
+
+    public ItemDataSource getDataSource() {
+        return itemDataSource;
     }
 
     protected abstract int getLoaderId();

@@ -2,6 +2,7 @@ package com.mtaylord.todo.list.base;
 
 import com.mtaylord.todo.data.model.Item;
 import com.mtaylord.todo.mvp.presenter.BasePresenter;
+import com.mtaylord.todo.mvp.presenter.Presenter;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  * Created by taylor on 12/18/16.
  */
 
-public interface BaseListPresenter<V extends BaseListView> extends BasePresenter<V> {
+public interface BaseListPresenter<V extends BaseListView> extends Presenter<V> {
 
     void startLoadItems();
 

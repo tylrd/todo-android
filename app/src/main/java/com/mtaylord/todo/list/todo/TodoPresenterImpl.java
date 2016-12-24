@@ -7,6 +7,7 @@ import com.mtaylord.todo.data.model.Item;
 import com.mtaylord.todo.data.source.ItemDataSource;
 import com.mtaylord.todo.list.base.BaseListPresenterImpl;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,8 +23,10 @@ public class TodoPresenterImpl extends BaseListPresenterImpl<TodoView> implement
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Item>> loader, List<Item> data) {
-
+    public Item createItem(String name) {
+        Item item = getDataSource().saveItem(name);
+        getView().showInsertItem(item);
+        return item;
     }
 
     @Override

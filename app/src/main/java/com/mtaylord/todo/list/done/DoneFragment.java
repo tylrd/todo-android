@@ -12,13 +12,27 @@ import java.util.List;
 
 public class DoneFragment extends Fragment implements DoneView {
 
+    public static Fragment newInstance() {
+        return new DoneFragment();
+    }
+
     @Override
-    public void updateList(List<Item> newList) {
+    public void showInsertItem(Item item) {
 
     }
 
     @Override
-    public void updateItem(Item item, int position) {
+    public void showItemList(List<Item> list) {
+
+    }
+
+    @Override
+    public void showUpdatedItemList(List<Item> newList) {
+
+    }
+
+    @Override
+    public void showUpdatedItem(Item item, int position) {
 
     }
 }

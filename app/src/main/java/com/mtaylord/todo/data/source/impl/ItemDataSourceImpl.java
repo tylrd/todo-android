@@ -87,14 +87,20 @@ public class ItemDataSourceImpl implements ItemDataSource {
     }
 
     @Override
-    public void saveItem(Item item) {
+    public Item saveItem(String name) {
+        if (name == null) {
+            return null;
+        }
+
+        Item item = new Item();
+        Date now = new Date();
+        item.setName(name);
+        item.setComplete(false);
+        item.setCreated(now);
+        item.setUpdated(now);
+
         try {
-            if (item == null) {
-                return;
-            }
-
-
-            String timeCreated = TimeUtil.toDateString(new Date());
+            String timeCreated = TimeUtil.toDateString(now);
 
             ContentValues contentValues = new ContentValues();
             contentValues.put(TodoContract.ItemEntry.COLUMN_NAME, item.getName());
@@ -104,11 +110,10 @@ public class ItemDataSourceImpl implements ItemDataSource {
             long id = mDb.insert(TodoContract.ItemEntry.TABLE_NAME, null, contentValues);
             Timber.d("Item successfully saved: %s", item);
             item.setId((int) id);
-
         } catch (IllegalStateException e) {
             Timber.e(e, "Error saving item %s", item.getName());
         }
-
+        return item;
     }
 
     @Override

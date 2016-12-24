@@ -1,5 +1,6 @@
 package com.mtaylord.todo.list.todo;
 
+import com.mtaylord.todo.data.model.Item;
 import com.mtaylord.todo.list.base.BaseListPresenter;
 
 /**
@@ -7,4 +8,7 @@ import com.mtaylord.todo.list.base.BaseListPresenter;
  */
 
 public interface TodoPresenter extends BaseListPresenter<TodoView> {
+
+    Item createItem(String name);
+
 }

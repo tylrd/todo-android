@@ -8,7 +8,7 @@ public interface ItemDataSource {
 
     List<Item> getItems(boolean completed);
 
-    void saveItem(Item item);
+    Item saveItem(String name);
 
     void deleteItems(List<Item> items);
 
