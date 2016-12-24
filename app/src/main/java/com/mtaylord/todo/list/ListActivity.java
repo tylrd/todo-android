@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -14,6 +15,7 @@ import com.mtaylord.todo.util.LockableViewPager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class ListActivity extends AppCompatActivity {
 
@@ -32,6 +34,28 @@ public class ListActivity extends AppCompatActivity {
         mPageAdapter = new ListPageAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPageAdapter);
         mPager.setSwipeable(false);
+        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (mFab != null) {
+                    if (position == 0 && !mFab.isShown()) {
+                        mFab.show();
+                    } else {
+                        mFab.hide();
+                    }
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         mTabLayout.setupWithViewPager(mPager);
     }
 

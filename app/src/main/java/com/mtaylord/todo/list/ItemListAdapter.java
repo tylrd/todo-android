@@ -12,6 +12,7 @@ import com.mtaylord.todo.R;
 import com.mtaylord.todo.data.model.Item;
 import com.mtaylord.todo.util.ItemListDiffUtil;
 
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -75,14 +76,16 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
 
     public void deleteItem(int position) {
         SparseBooleanArray newSelectedItems = new SparseBooleanArray();
-        for (int i = 0; i < mItemList.size(); i++) {
-            int key = selectedItems.keyAt(i);
-            if (key > position) {
-                newSelectedItems.append(key - 1, true);
-            } else if (key == position) {
-                newSelectedItems.delete(position);
-            } else {
-                newSelectedItems.append(key, true);
+        if (selectedItems.size() > 0) {
+            for (int i = 0; i < selectedItems.size(); i++) {
+                int key = selectedItems.keyAt(i);
+                if (key > position) {
+                    newSelectedItems.append(key - 1, true);
+                } else if (key == position) {
+                    newSelectedItems.delete(position);
+                } else {
+                    newSelectedItems.append(key, true);
+                }
             }
         }
         selectedItems = newSelectedItems;

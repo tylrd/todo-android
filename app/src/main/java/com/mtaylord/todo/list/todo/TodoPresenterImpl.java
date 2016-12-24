@@ -5,7 +5,10 @@ import android.support.v4.content.Loader;
 
 import com.mtaylord.todo.data.model.Item;
 import com.mtaylord.todo.data.source.ItemDataSource;
+import com.mtaylord.todo.list.ItemCompleteEvent;
 import com.mtaylord.todo.list.base.BaseListPresenterImpl;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Date;
 import java.util.List;
@@ -20,6 +23,14 @@ public class TodoPresenterImpl extends BaseListPresenterImpl<TodoView> implement
                              LoaderManager loaderManager,
                              Loader<List<Item>> loader) {
         super(itemDataSource, loaderManager, loader);
+    }
+
+    @Override
+    public void completeItem(Item item, int position) {
+        item.setComplete(true);
+        getDataSource().updateItem(item);
+        getView().showRemoveItem(position);
+        EventBus.getDefault().post(new ItemCompleteEvent(item));
     }
 
     @Override

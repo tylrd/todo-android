@@ -11,4 +11,6 @@ public interface TodoPresenter extends BaseListPresenter<TodoView> {
 
     Item createItem(String name);
 
+    void completeItem(Item item, int position);
+
 }

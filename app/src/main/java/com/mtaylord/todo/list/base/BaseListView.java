@@ -19,4 +19,6 @@ public interface BaseListView extends BaseView {
 
     void showUpdatedItem(Item item, int position);
 
+    void showRemoveItem(int position);
+
 }
