@@ -1,14 +1,17 @@
-package com.mtaylord.todo.mvp.model;
+package com.mtaylord.todo.data.model;
 
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Item {
     private int id;
+    private int listId;
     private String name;
     private String description;
     private boolean complete;

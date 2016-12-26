@@ -1,22 +1,23 @@
-package com.mtaylord.todo.ui;
+package com.mtaylord.todo.list;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.mtaylord.todo.R;
-import com.mtaylord.todo.ui.adapter.ListPageAdapter;
 import com.mtaylord.todo.util.LockableViewPager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
-public class MainActivity extends AppCompatActivity {
+public class ListActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.fab) FloatingActionButton mFab;
@@ -30,9 +31,31 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        LoaderManager loaderManager = getSupportLoaderManager();
-        mPager.setAdapter(new ListPageAdapter(getSupportFragmentManager(), this, loaderManager));
+        mPageAdapter = new ListPageAdapter(getSupportFragmentManager());
+        mPager.setAdapter(mPageAdapter);
         mPager.setSwipeable(false);
+        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (mFab != null) {
+                    if (position == 0 && !mFab.isShown()) {
+                        mFab.show();
+                    } else {
+                        mFab.hide();
+                    }
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         mTabLayout.setupWithViewPager(mPager);
     }
 

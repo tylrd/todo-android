@@ -1,4 +1,4 @@
-package com.mtaylord.todo.ui.adapter;
+package com.mtaylord.todo.list;
 
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
@@ -6,21 +6,20 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.mtaylord.todo.R;
-import com.mtaylord.todo.mvp.model.Item;
+import com.mtaylord.todo.data.model.Item;
 import com.mtaylord.todo.util.ItemListDiffUtil;
 
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
+public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHolder> {
 
     public interface OnItemSelectedListener {
         void onItemSelected(Item item);
@@ -32,7 +31,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     private OnItemSelectedListener mSelectedListener;
     private SparseBooleanArray selectedItems;
 
-    public ItemAdapter(List<Item> itemList) {
+    public ItemListAdapter(List<Item> itemList) {
         mItemList = itemList;
         selectedItems = new SparseBooleanArray();
     }
@@ -77,14 +76,16 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     public void deleteItem(int position) {
         SparseBooleanArray newSelectedItems = new SparseBooleanArray();
-        for (int i = 0; i < mItemList.size(); i++) {
-            int key = selectedItems.keyAt(i);
-            if (key > position) {
-                newSelectedItems.append(key - 1, true);
-            } else if (key == position) {
-                newSelectedItems.delete(position);
-            } else {
-                newSelectedItems.append(key, true);
+        if (selectedItems.size() > 0) {
+            for (int i = 0; i < selectedItems.size(); i++) {
+                int key = selectedItems.keyAt(i);
+                if (key > position) {
+                    newSelectedItems.append(key - 1, true);
+                } else if (key == position) {
+                    newSelectedItems.delete(position);
+                } else {
+                    newSelectedItems.append(key, true);
+                }
             }
         }
         selectedItems = newSelectedItems;

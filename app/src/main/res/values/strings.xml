@@ -4,4 +4,5 @@
     <string name="item_hint_name">Name</string>
     <string name="dialog_add_item">Add Item</string>
     <string name="group_delete">Group Delete</string>
+    <string name="group_complete">Group Complete</string>
 </resources>
