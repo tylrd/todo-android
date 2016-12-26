@@ -11,12 +11,13 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.mtaylord.todo.R;
 import com.mtaylord.todo.data.ItemListLoader;
 import com.mtaylord.todo.data.model.Item;
-import com.mtaylord.todo.data.source.ItemDataSource;
-import com.mtaylord.todo.data.source.impl.ItemDataSourceImpl;
+import com.mtaylord.todo.data.source.item.ItemDataSource;
+import com.mtaylord.todo.data.source.item.impl.LocalItemDataSource;
 import com.mtaylord.todo.list.ItemListAdapter;
 
 import java.util.Collections;
@@ -43,7 +44,7 @@ public class TodoFragment extends Fragment implements TodoView {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ItemDataSource itemDataSource = ItemDataSourceImpl.getInstance(getActivity());
+        ItemDataSource itemDataSource = LocalItemDataSource.getInstance(getActivity());
         Loader<List<Item>> loader = new ItemListLoader(getActivity(), itemDataSource, false);
         mPresenter = new TodoPresenterImpl(itemDataSource, getLoaderManager(), loader);
         mPresenter.attachView(this);
@@ -60,7 +61,11 @@ public class TodoFragment extends Fragment implements TodoView {
     private AddItemDialog.DialogListener dialogListener = new AddItemDialog.DialogListener() {
         @Override
         public void onDialogPositiveClick(AddItemDialog dialog, String itemName) {
-            mPresenter.createItem(itemName);
+            if (itemName != null && !itemName.isEmpty()) {
+                mPresenter.createItem(itemName);
+            } else {
+                Toast.makeText(getActivity(), "Cannot add item without a title", Toast.LENGTH_LONG).show();
+            }
         }
 
         @Override

@@ -5,7 +5,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
 import com.mtaylord.todo.data.model.Item;
-import com.mtaylord.todo.data.source.ItemDataSource;
+import com.mtaylord.todo.data.source.item.ItemDataSource;
 import com.mtaylord.todo.mvp.presenter.BasePresenter;
 
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ public abstract class BaseListPresenterImpl<V extends BaseListView> extends Base
     public void updateItem(Item item, int position) {
         item.setComplete(true);
         item.setUpdated(new Date());
-        itemDataSource.updateItem(item);
+        itemDataSource.update(item);
         getView().showUpdatedItem(item, position);
     }
 
@@ -78,7 +78,7 @@ public abstract class BaseListPresenterImpl<V extends BaseListView> extends Base
     public void deleteSelected(List<Item> originalList) {
         if (!selectedItems.isEmpty()) {
             List<Item> newList = removeSelectedItems(originalList);
-            itemDataSource.deleteItems(selectedItems);
+            itemDataSource.deleteAll(selectedItems);
             getView().showUpdatedItemList(newList);
             selectedItems.clear();
         } else {

@@ -4,7 +4,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
 import com.mtaylord.todo.data.model.Item;
-import com.mtaylord.todo.data.source.ItemDataSource;
+import com.mtaylord.todo.data.source.item.ItemDataSource;
 import com.mtaylord.todo.list.ItemCompleteEvent;
 import com.mtaylord.todo.list.base.BaseListPresenterImpl;
 

@@ -3,7 +3,7 @@ package com.mtaylord.todo.data;
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
-import com.mtaylord.todo.data.source.ItemDataSource;
+import com.mtaylord.todo.data.source.item.ItemDataSource;
 import com.mtaylord.todo.data.model.Item;
 
 import java.util.List;
@@ -27,7 +27,11 @@ public class ItemListLoader extends AsyncTaskLoader<List<Item>> {
 
     @Override
     public List<Item> loadInBackground() {
-        return itemDataSource.getItems(complete);
+        if (complete) {
+            return itemDataSource.getAllCompleteByList(0);
+        } else {
+            return itemDataSource.getAllTodoByList(0);
+        }
     }
 
 }

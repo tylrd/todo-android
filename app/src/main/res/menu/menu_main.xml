@@ -3,6 +3,12 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="com.mtaylord.todo.list.ListActivity">
     <item
+        android:id="@+id/group_complete"
+        android:icon="@drawable/ic_done_all_black_24dp"
+        android:title="@string/group_complete"
+        app:showAsAction="ifRoom"
+        />
+    <item
         android:id="@+id/group_delete"
         android:icon="@drawable/ic_delete_black_24dp"
         android:title="@string/group_delete"

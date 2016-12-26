@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 import com.mtaylord.todo.R;
 import com.mtaylord.todo.data.ItemListLoader;
 import com.mtaylord.todo.data.model.Item;
-import com.mtaylord.todo.data.source.ItemDataSource;
-import com.mtaylord.todo.data.source.impl.ItemDataSourceImpl;
+import com.mtaylord.todo.data.source.item.ItemDataSource;
+import com.mtaylord.todo.data.source.item.impl.LocalItemDataSource;
 import com.mtaylord.todo.list.ItemListAdapter;
 
 import java.util.Collections;
@@ -41,7 +41,7 @@ public class DoneFragment extends Fragment implements DoneView {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ItemDataSource itemDataSource = ItemDataSourceImpl.getInstance(getActivity());
+        ItemDataSource itemDataSource = LocalItemDataSource.getInstance(getActivity());
         Loader<List<Item>> loader = new ItemListLoader(getActivity(), itemDataSource, true);
         mPresenter = new DonePresenterImpl(itemDataSource, getLoaderManager(), loader);
         mPresenter.attachView(this);
