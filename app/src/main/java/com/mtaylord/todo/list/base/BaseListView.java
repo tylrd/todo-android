@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface BaseListView extends BaseView {
 
-    void showInsertItem(Item item);
+    void showInsertItems(List<Item> items);
 
     void showItemList(List<Item> list);
 

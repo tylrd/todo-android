@@ -71,8 +71,8 @@ public class DoneFragment extends Fragment implements DoneView {
     }
 
     @Override
-    public void showInsertItem(Item item) {
-        mAdapter.addItem(item);
+    public void showInsertItems(List<Item> items) {
+        mAdapter.addItem(items);
     }
 
     @Override

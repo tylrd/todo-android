@@ -25,6 +25,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by taylor on 12/18/16.
@@ -115,8 +116,8 @@ public class TodoFragment extends Fragment implements TodoView {
     }
 
     @Override
-    public void showInsertItem(Item item) {
-        mAdapter.addItem(item);
+    public void showInsertItems(List<Item> items) {
+        mAdapter.addItem(items);
     }
 
     @Override

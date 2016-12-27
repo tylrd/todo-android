@@ -5,11 +5,13 @@ import android.support.v4.content.Loader;
 
 import com.mtaylord.todo.data.model.Item;
 import com.mtaylord.todo.data.source.item.ItemDataSource;
-import com.mtaylord.todo.list.ItemCompleteEvent;
+import com.mtaylord.todo.list.ItemsCompleteEvent;
 import com.mtaylord.todo.list.base.BaseListPresenterImpl;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,14 +31,16 @@ public class TodoPresenterImpl extends BaseListPresenterImpl<TodoView> implement
         item.setComplete(true);
         getDataSource().update(item);
         getView().showRemoveItem(position);
-        EventBus.getDefault().post(new ItemCompleteEvent(item));
+        List<Item> items = new ArrayList<>();
+        items.add(item);
+        EventBus.getDefault().post(new ItemsCompleteEvent(items));
     }
 
     @Override
     public Item createItem(String name) {
         Item item = new Item(name, false);
         item = getDataSource().create(item);
-        getView().showInsertItem(item);
+        getView().showInsertItems(Collections.singletonList(item));
         return item;
     }
 

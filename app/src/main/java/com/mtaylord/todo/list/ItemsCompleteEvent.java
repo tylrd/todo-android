@@ -2,6 +2,8 @@ package com.mtaylord.todo.list;
 
 import com.mtaylord.todo.data.model.Item;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -11,6 +13,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ItemCompleteEvent {
-    private final Item item;
+public class ItemsCompleteEvent {
+    private final List<Item> items;
 }

@@ -215,7 +215,7 @@ public class LocalItemDataSource implements ItemDataSource {
         if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 int id = cursor.getInt(cursor.getColumnIndexOrThrow(TodoContract.ItemEntry._ID));
-                int list_id = cursor.getInt(cursor.getColumnIndexOrThrow(TodoContract.ItemEntry.COLUMN_LIST_ID));
+                int listId = cursor.getInt(cursor.getColumnIndexOrThrow(TodoContract.ItemEntry.COLUMN_LIST_ID));
                 int completed = cursor.getInt(cursor.getColumnIndexOrThrow(TodoContract.ItemEntry.COLUMN_COMPLETE));
                 String name = cursor.getString(cursor.getColumnIndexOrThrow(TodoContract.ItemEntry.COLUMN_NAME));
                 String created = cursor.getString(cursor.getColumnIndexOrThrow(TodoContract.ItemEntry.COLUMN_CREATED));
@@ -223,7 +223,7 @@ public class LocalItemDataSource implements ItemDataSource {
 
                 Item item = new Item(name, completed != 0);
                 item.setId(id);
-                item.setListId(list_id);
+                item.setListId(listId);
                 item.setCreated(TimeUtil.toDate(created));
                 item.setUpdated(TimeUtil.toDate(updated));
                 Timber.d("Item loaded: %s", item);
