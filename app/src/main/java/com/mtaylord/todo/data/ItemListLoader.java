@@ -5,18 +5,21 @@ import android.support.v4.content.AsyncTaskLoader;
 
 import com.mtaylord.todo.data.source.item.ItemDataSource;
 import com.mtaylord.todo.data.model.Item;
+import com.mtaylord.todo.data.source.item.impl.LocalItemDataSource;
 
 import java.util.List;
 
 
 public class ItemListLoader extends AsyncTaskLoader<List<Item>> {
 
-    private ItemDataSource itemDataSource;
+    private ItemDataSource localDataSource;
+    private int listId;
     private boolean complete;
 
-    public ItemListLoader(Context context, ItemDataSource dataSource, boolean complete) {
+    public ItemListLoader(Context context, ItemDataSource localDataSource, int listId, boolean complete) {
         super(context);
-        this.itemDataSource = dataSource;
+        this.localDataSource = localDataSource;
+        this.listId = listId;
         this.complete = complete;
     }
 
@@ -27,11 +30,7 @@ public class ItemListLoader extends AsyncTaskLoader<List<Item>> {
 
     @Override
     public List<Item> loadInBackground() {
-        if (complete) {
-            return itemDataSource.getAllCompleteByList(0);
-        } else {
-            return itemDataSource.getAllTodoByList(0);
-        }
+        return localDataSource.getAllByCompletion(listId, complete);
     }
 
 }

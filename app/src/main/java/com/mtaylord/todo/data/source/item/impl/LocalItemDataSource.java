@@ -166,16 +166,6 @@ public class LocalItemDataSource implements ItemDataSource {
     }
 
     @Override
-    public List<Item> getAllTodoByList(int listId) {
-        return getItemsByCompletion(false, listId);
-    }
-
-    @Override
-    public List<Item> getAllCompleteByList(int listId) {
-        return getItemsByCompletion(true, listId);
-    }
-
-    @Override
     public List<Item> getAllByList(int listId) {
         return null;
     }
@@ -197,7 +187,8 @@ public class LocalItemDataSource implements ItemDataSource {
         return args;
     }
 
-    private List<Item> getItemsByCompletion(boolean isComplete, int listId) {
+    @Override
+    public List<Item> getAllByCompletion(int listId, boolean isComplete) {
         List<Item> items = new ArrayList<>();
         try {
 

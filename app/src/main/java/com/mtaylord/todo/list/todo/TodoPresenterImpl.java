@@ -27,14 +27,15 @@ public class TodoPresenterImpl extends BaseListPresenterImpl<TodoView> implement
     @Override
     public void completeItem(Item item, int position) {
         item.setComplete(true);
-        getDataSource().updateItem(item);
+        getDataSource().update(item);
         getView().showRemoveItem(position);
         EventBus.getDefault().post(new ItemCompleteEvent(item));
     }
 
     @Override
     public Item createItem(String name) {
-        Item item = getDataSource().saveItem(name);
+        Item item = new Item(name, false);
+        item = getDataSource().create(item);
         getView().showInsertItem(item);
         return item;
     }

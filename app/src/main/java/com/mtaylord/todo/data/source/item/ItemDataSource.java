@@ -7,9 +7,7 @@ import java.util.List;
 
 public interface ItemDataSource extends DataSource<Item> {
 
-    List<Item> getAllTodoByList(int listId);
-
-    List<Item> getAllCompleteByList(int listId);
+    List<Item> getAllByCompletion(int listId, boolean complete);
 
     List<Item> getAllByList(int listId);
 

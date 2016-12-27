@@ -17,15 +17,14 @@ public class TodoDbHelper extends SQLiteOpenHelper {
     public static final String CREATE_ITEM_TABLE = "CREATE TABLE " +
             TodoContract.ItemEntry.TABLE_NAME + " (" +
             TodoContract.ItemEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            //Start foreign key
-            TodoContract.ItemEntry.COLUMN_LIST_ID + " INTEGER " +
-            "FOREIGN KEY (" + TodoContract.ItemEntry.COLUMN_LIST_ID + ") REFERENCES " +
-            TodoContract.ListEntry.TABLE_NAME + "(" + TodoContract.ListEntry._ID +")" +
-            //End foreign key
+            TodoContract.ItemEntry.COLUMN_LIST_ID + " INTEGER," +
             TodoContract.ItemEntry.COLUMN_NAME + " TEXT," +
             TodoContract.ItemEntry.COLUMN_COMPLETE + " INTEGER DEFAULT 0," +
             TodoContract.ItemEntry.COLUMN_CREATED + " DATETIME DEFAULT CURRENT_TIMESTAMP," +
-            TodoContract.ItemEntry.COLUMN_UPDATED + " DATETIME DEFAULT CURRENT_TIMESTAMP)";
+            TodoContract.ItemEntry.COLUMN_UPDATED + " DATETIME DEFAULT CURRENT_TIMESTAMP," +
+            "FOREIGN KEY(" + TodoContract.ItemEntry.COLUMN_LIST_ID + ") REFERENCES " +
+            TodoContract.ListEntry.TABLE_NAME + "(" + TodoContract.ListEntry._ID +"))";
+
 
     public static final String CREATE_LIST_TABLE = "CREATE TABLE " +
             TodoContract.ListEntry.TABLE_NAME + " (" +

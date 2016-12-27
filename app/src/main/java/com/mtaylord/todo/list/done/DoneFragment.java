@@ -42,7 +42,7 @@ public class DoneFragment extends Fragment implements DoneView {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ItemDataSource itemDataSource = LocalItemDataSource.getInstance(getActivity());
-        Loader<List<Item>> loader = new ItemListLoader(getActivity(), itemDataSource, true);
+        Loader<List<Item>> loader = new ItemListLoader(getActivity(), itemDataSource, 0, true);
         mPresenter = new DonePresenterImpl(itemDataSource, getLoaderManager(), loader);
         mPresenter.attachView(this);
         List<Item> emptyList = Collections.emptyList();

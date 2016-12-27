@@ -45,7 +45,7 @@ public class TodoFragment extends Fragment implements TodoView {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ItemDataSource itemDataSource = LocalItemDataSource.getInstance(getActivity());
-        Loader<List<Item>> loader = new ItemListLoader(getActivity(), itemDataSource, false);
+        Loader<List<Item>> loader = new ItemListLoader(getActivity(), itemDataSource, 0, false);
         mPresenter = new TodoPresenterImpl(itemDataSource, getLoaderManager(), loader);
         mPresenter.attachView(this);
         List<Item> emptyList = Collections.emptyList();
