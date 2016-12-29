@@ -1,4 +1,4 @@
-package com.mtaylord.todo.list.todo;
+package com.mtaylord.todo.todo.todo;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,17 +15,17 @@ import android.widget.Toast;
 
 import com.mtaylord.todo.R;
 import com.mtaylord.todo.data.ItemListLoader;
+import com.mtaylord.todo.data.db.TodoDbHelper;
 import com.mtaylord.todo.data.model.Item;
 import com.mtaylord.todo.data.source.item.ItemDataSource;
 import com.mtaylord.todo.data.source.item.impl.LocalItemDataSource;
-import com.mtaylord.todo.list.ItemListAdapter;
+import com.mtaylord.todo.todo.ItemListAdapter;
 
 import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by taylor on 12/18/16.
@@ -45,7 +45,8 @@ public class TodoFragment extends Fragment implements TodoView {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ItemDataSource itemDataSource = LocalItemDataSource.getInstance(getActivity());
+        TodoDbHelper todoDbHelper = TodoDbHelper.getInstance(getActivity().getApplicationContext());
+        ItemDataSource itemDataSource = LocalItemDataSource.getInstance(todoDbHelper);
         Loader<List<Item>> loader = new ItemListLoader(getActivity(), itemDataSource, 0, false);
         mPresenter = new TodoPresenterImpl(itemDataSource, getLoaderManager(), loader);
         mPresenter.attachView(this);

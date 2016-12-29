@@ -33,9 +33,9 @@ public class TodoDbHelper extends SQLiteOpenHelper {
             TodoContract.ListEntry.COLUMN_CREATED + " DATETIME DEFAULT CURRENT_TIMESTAMP," +
             TodoContract.ListEntry.COLUMN_UPDATED + " DATETIME DEFAULT CURRENT_TIMESTAMP)";
 
-    public static synchronized TodoDbHelper getInstance(Context context, int version)  {
+    public static synchronized TodoDbHelper getInstance(Context context)  {
         if (instance == null) {
-            instance = new TodoDbHelper(context, version);
+            instance = new TodoDbHelper(context, 1);
         }
         return instance;
     }

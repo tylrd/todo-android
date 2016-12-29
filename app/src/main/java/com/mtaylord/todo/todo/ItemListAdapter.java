@@ -1,4 +1,4 @@
-package com.mtaylord.todo.list;
+package com.mtaylord.todo.todo;
 
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +12,6 @@ import com.mtaylord.todo.R;
 import com.mtaylord.todo.data.model.Item;
 import com.mtaylord.todo.util.ItemListDiffUtil;
 
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;

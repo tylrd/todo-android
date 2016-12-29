@@ -1,4 +1,4 @@
-package com.mtaylord.todo.list.done;
+package com.mtaylord.todo.todo.done;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,10 +12,11 @@ import android.view.ViewGroup;
 
 import com.mtaylord.todo.R;
 import com.mtaylord.todo.data.ItemListLoader;
+import com.mtaylord.todo.data.db.TodoDbHelper;
 import com.mtaylord.todo.data.model.Item;
 import com.mtaylord.todo.data.source.item.ItemDataSource;
 import com.mtaylord.todo.data.source.item.impl.LocalItemDataSource;
-import com.mtaylord.todo.list.ItemListAdapter;
+import com.mtaylord.todo.todo.ItemListAdapter;
 
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +42,8 @@ public class DoneFragment extends Fragment implements DoneView {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ItemDataSource itemDataSource = LocalItemDataSource.getInstance(getActivity());
+        TodoDbHelper todoDbHelper = TodoDbHelper.getInstance(getActivity().getApplicationContext());
+        ItemDataSource itemDataSource = LocalItemDataSource.getInstance(todoDbHelper);
         Loader<List<Item>> loader = new ItemListLoader(getActivity(), itemDataSource, 0, true);
         mPresenter = new DonePresenterImpl(itemDataSource, getLoaderManager(), loader);
         mPresenter.attachView(this);

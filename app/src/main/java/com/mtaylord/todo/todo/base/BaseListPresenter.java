@@ -1,7 +1,6 @@
-package com.mtaylord.todo.list.base;
+package com.mtaylord.todo.todo.base;
 
 import com.mtaylord.todo.data.model.Item;
-import com.mtaylord.todo.mvp.presenter.BasePresenter;
 import com.mtaylord.todo.mvp.presenter.Presenter;
 
 import java.util.List;

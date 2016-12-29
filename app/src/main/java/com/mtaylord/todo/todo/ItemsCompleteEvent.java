@@ -1,4 +1,4 @@
-package com.mtaylord.todo.list;
+package com.mtaylord.todo.todo;
 
 import com.mtaylord.todo.data.model.Item;
 

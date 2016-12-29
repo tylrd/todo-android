@@ -1,4 +1,4 @@
-package com.mtaylord.todo.list.todo;
+package com.mtaylord.todo.todo.todo;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

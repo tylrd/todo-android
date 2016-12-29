@@ -1,9 +1,8 @@
-package com.mtaylord.todo.list;
+package com.mtaylord.todo.todo;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,7 +14,6 @@ import com.mtaylord.todo.util.LockableViewPager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class ListActivity extends AppCompatActivity {
 

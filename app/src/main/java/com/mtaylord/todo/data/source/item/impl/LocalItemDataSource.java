@@ -1,7 +1,6 @@
 package com.mtaylord.todo.data.source.item.impl;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -36,14 +35,13 @@ public class LocalItemDataSource implements ItemDataSource {
 
     private SQLiteDatabase mDb;
 
-    private LocalItemDataSource(Context context) {
-        TodoDbHelper todoDbHelper = TodoDbHelper.getInstance(context, 1);
+    private LocalItemDataSource(TodoDbHelper todoDbHelper) {
         mDb = todoDbHelper.getWritableDatabase();
     }
 
-    public static LocalItemDataSource getInstance(Context context) {
+    public static LocalItemDataSource getInstance(TodoDbHelper todoDbHelper) {
         if (INSTANCE == null) {
-            INSTANCE = new LocalItemDataSource(context);
+            INSTANCE = new LocalItemDataSource(todoDbHelper);
         }
         return INSTANCE;
     }

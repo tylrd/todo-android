@@ -1,12 +1,12 @@
-package com.mtaylord.todo.list.done;
+package com.mtaylord.todo.todo.done;
 
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
 import com.mtaylord.todo.data.model.Item;
 import com.mtaylord.todo.data.source.item.ItemDataSource;
-import com.mtaylord.todo.list.ItemsCompleteEvent;
-import com.mtaylord.todo.list.base.BaseListPresenterImpl;
+import com.mtaylord.todo.todo.ItemsCompleteEvent;
+import com.mtaylord.todo.todo.base.BaseListPresenterImpl;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
