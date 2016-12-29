@@ -1,4 +1,4 @@
-package com.mtaylord.todo.todo.todo;
+package com.mtaylord.todo.itemlist.todo;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,7 +19,7 @@ import com.mtaylord.todo.data.db.TodoDbHelper;
 import com.mtaylord.todo.data.model.Item;
 import com.mtaylord.todo.data.source.item.ItemDataSource;
 import com.mtaylord.todo.data.source.item.impl.LocalItemDataSource;
-import com.mtaylord.todo.todo.ItemListAdapter;
+import com.mtaylord.todo.itemlist.ItemListAdapter;
 
 import java.util.Collections;
 import java.util.List;
@@ -79,7 +79,7 @@ public class TodoFragment extends Fragment implements TodoView {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.list_fragment, container, false);
+        final View view = inflater.inflate(R.layout.itemlist_fragment, container, false);
         ButterKnife.bind(this, view);
 
         mRecyclerView.setAdapter(mAdapter);
@@ -98,7 +98,7 @@ public class TodoFragment extends Fragment implements TodoView {
         });
         itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
-        final FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        final FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.itemlist_fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

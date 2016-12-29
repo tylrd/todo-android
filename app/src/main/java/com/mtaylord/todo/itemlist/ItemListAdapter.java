@@ -1,4 +1,4 @@
-package com.mtaylord.todo.todo;
+package com.mtaylord.todo.itemlist;
 
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;

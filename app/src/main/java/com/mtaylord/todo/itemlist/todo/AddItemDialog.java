@@ -1,4 +1,4 @@
-package com.mtaylord.todo.todo.todo;
+package com.mtaylord.todo.itemlist.todo;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -34,7 +34,7 @@ public class AddItemDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
         return builder.setMessage(R.string.dialog_add_item)
-                .setView(inflater.inflate(R.layout.item_dialog, null))
+                .setView(inflater.inflate(R.layout.additem_dialog, null))
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

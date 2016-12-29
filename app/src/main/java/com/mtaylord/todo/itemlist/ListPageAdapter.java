@@ -1,11 +1,11 @@
-package com.mtaylord.todo.todo;
+package com.mtaylord.todo.itemlist;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.mtaylord.todo.todo.done.DoneFragment;
-import com.mtaylord.todo.todo.todo.TodoFragment;
+import com.mtaylord.todo.itemlist.done.DoneFragment;
+import com.mtaylord.todo.itemlist.todo.TodoFragment;
 
 public class ListPageAdapter extends FragmentStatePagerAdapter {
 
