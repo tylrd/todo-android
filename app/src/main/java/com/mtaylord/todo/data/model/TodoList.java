@@ -19,4 +19,8 @@ public class TodoList {
     private Date updated;
     private List<Item> doneItems;
     private List<Item> todoItems;
+
+    public TodoList(String name) {
+        this.name = name;
+    }
 }

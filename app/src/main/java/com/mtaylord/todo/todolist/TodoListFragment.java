@@ -1,5 +1,6 @@
 package com.mtaylord.todo.todolist;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,9 +12,12 @@ import android.view.ViewGroup;
 
 import com.mtaylord.todo.R;
 import com.mtaylord.todo.data.model.TodoList;
+import com.mtaylord.todo.itemlist.TodoActivity;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +46,21 @@ public class TodoListFragment extends Fragment {
         ButterKnife.bind(this, view);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        List<TodoList> dummyData = new ArrayList<>();
+        for (int i = 0; i < 1000; i++) {
+            TodoList todoList = new TodoList(String.format(Locale.ENGLISH, "list %d", i));
+            todoList.setId(i);
+            dummyData.add(todoList);
+        }
+        mAdapter.replaceData(dummyData);
+        mAdapter.setOnListClickListener(new TodoListAdapter.OnListClickListener() {
+            @Override
+            public void onClick(TodoList list) {
+                Intent intent = new Intent(getActivity(), TodoActivity.class);
+                intent.putExtra("listId", list.getId());
+                startActivity(intent);
+            }
+        });
         return view;
     }
 }

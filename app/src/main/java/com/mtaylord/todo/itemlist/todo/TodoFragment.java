@@ -38,8 +38,12 @@ public class TodoFragment extends Fragment implements TodoView {
 
     @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
 
-    public static Fragment newInstance() {
-        return new TodoFragment();
+    public static Fragment newInstance(int listId) {
+        Fragment todoFragment = new TodoFragment();
+        Bundle args = new Bundle();
+        args.putInt("listId", listId);
+        todoFragment.setArguments(args);
+        return todoFragment;
     }
 
     @Override
@@ -47,7 +51,7 @@ public class TodoFragment extends Fragment implements TodoView {
         super.onCreate(savedInstanceState);
         TodoDbHelper todoDbHelper = TodoDbHelper.getInstance(getActivity().getApplicationContext());
         ItemDataSource itemDataSource = LocalItemDataSource.getInstance(todoDbHelper);
-        Loader<List<Item>> loader = new ItemListLoader(getActivity(), itemDataSource, 0, false);
+        Loader<List<Item>> loader = new ItemListLoader(getActivity(), itemDataSource, getArguments().getInt("listId"), false);
         mPresenter = new TodoPresenterImpl(itemDataSource, getLoaderManager(), loader);
         mPresenter.attachView(this);
         List<Item> emptyList = Collections.emptyList();

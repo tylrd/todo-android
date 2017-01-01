@@ -29,7 +29,7 @@ public class TodoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_itemlist);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        mPageAdapter = new ListPageAdapter(getSupportFragmentManager());
+        mPageAdapter = new ListPageAdapter(getSupportFragmentManager(), getIntent().getIntExtra("listId", -1));
         mPager.setAdapter(mPageAdapter);
         mPager.setSwipeable(false);
         mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

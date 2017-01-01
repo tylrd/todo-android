@@ -4,12 +4,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.mtaylord.todo.R;
 import com.mtaylord.todo.data.model.TodoList;
 
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -18,10 +20,19 @@ import butterknife.ButterKnife;
 
 public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.Adapter> {
 
+    interface OnListClickListener {
+        void onClick(TodoList list);
+    }
+
     private List<TodoList> mList;
+    private OnListClickListener mOnListClickListener;
 
     public TodoListAdapter(List<TodoList> list) {
         mList = list;
+    }
+
+    public void setOnListClickListener(OnListClickListener listener) {
+        mOnListClickListener = listener;
     }
 
     @Override
@@ -32,7 +43,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.Adapte
 
     @Override
     public void onBindViewHolder(Adapter holder, int position) {
-        holder.bind();
+        holder.bind(mList.get(position));
     }
 
     @Override
@@ -40,16 +51,31 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.Adapte
         return mList.size();
     }
 
-    static class Adapter extends RecyclerView.ViewHolder {
+    void replaceData(List<TodoList> newList) {
+        mList = null;
+        mList = newList;
+        notifyDataSetChanged();
+    }
+
+    class Adapter extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        @BindView(R.id.list_name) TextView mTextView;
 
         Adapter(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
         }
 
-        void bind() {
-
+        @Override
+        public void onClick(View v) {
+            if (mOnListClickListener != null) {
+                mOnListClickListener.onClick(mList.get(getAdapterPosition()));
+            }
         }
 
+        void bind(TodoList list) {
+            mTextView.setText(list.getName());
+        }
     }
 }

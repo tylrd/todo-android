@@ -14,17 +14,20 @@ public class ListPageAdapter extends FragmentStatePagerAdapter {
     public static final int TODO_PAGE = 0;
     public static final int DONE_PAGE = 1;
 
-    public ListPageAdapter(FragmentManager fm) {
+    private int listId;
+
+    public ListPageAdapter(FragmentManager fm, int listId) {
         super(fm);
+        this.listId = listId;
     }
 
     @Override
     public Fragment getItem(int position) {
         switch (position) {
             case TODO_PAGE:
-                return TodoFragment.newInstance();
+                return TodoFragment.newInstance(listId);
             case DONE_PAGE:
-                return DoneFragment.newInstance();
+                return DoneFragment.newInstance(listId);
             default:
                 return null;
         }

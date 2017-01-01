@@ -35,8 +35,12 @@ public class DoneFragment extends Fragment implements DoneView {
 
     @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
 
-    public static Fragment newInstance() {
-        return new DoneFragment();
+    public static Fragment newInstance(int listId) {
+        Fragment doneFragment = new DoneFragment();
+        Bundle args = new Bundle();
+        args.putInt("listId", listId);
+        doneFragment.setArguments(args);
+        return doneFragment;
     }
 
     @Override
@@ -44,7 +48,7 @@ public class DoneFragment extends Fragment implements DoneView {
         super.onCreate(savedInstanceState);
         TodoDbHelper todoDbHelper = TodoDbHelper.getInstance(getActivity().getApplicationContext());
         ItemDataSource itemDataSource = LocalItemDataSource.getInstance(todoDbHelper);
-        Loader<List<Item>> loader = new ItemListLoader(getActivity(), itemDataSource, 0, true);
+        Loader<List<Item>> loader = new ItemListLoader(getActivity(), itemDataSource, getArguments().getInt("listId"), true);
         mPresenter = new DonePresenterImpl(itemDataSource, getLoaderManager(), loader);
         mPresenter.attachView(this);
         List<Item> emptyList = Collections.emptyList();
